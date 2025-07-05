@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
+import { ROLES } from "../constants/roles";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -9,8 +11,8 @@ const UserSchema = new mongoose.Schema(
     profileImageUrl: { type: String, default: null },
     role: {
       type: String,
-      enum: ["admin", "manager", "developer"],
-      default: "developer",
+      enum: Object.values(ROLES),
+      default: ROLES.DEVELOPER,
     }, //Role based access
     workspace: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,4 +23,5 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
+export default User;
