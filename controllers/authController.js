@@ -13,7 +13,7 @@ import User from "../models/User.js";
 import Workspace from "../models/Workspace.js";
 
 // Session model
-import Session from "../models/Session.js";
+import Session from "../models/Auth Models/Session.js";
 
 // JWT token
 import { generateToken } from "../utils/generateToken.js";
@@ -66,15 +66,15 @@ export const registerUser = async (req, res, next) => {
     });
 
     // Create JWT
-    const token = generateToken(newUser._id);
+    const signUpToken = generateToken(newUser._id);
 
     // Store session in DB
     await Session.create({
       user: newUser._id,
-      token,
+      signUpToken,
     });
 
-    res.cookie("token", token, {
+    res.cookie("token", signUpToken, {
       httpOnly: true,
       secure: false, // Change this in production to true
       sameSite: "strict",
@@ -86,7 +86,7 @@ export const registerUser = async (req, res, next) => {
       userId: newUser._id,
       role: newUser.role,
       redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
-      token, // Remove in production
+      signUpToken, // Remove in production
     });
   } catch (error) {
     // Centeralized error handler
@@ -96,5 +96,45 @@ export const registerUser = async (req, res, next) => {
 
 // ===== Login User Controller =====
 export const loginUser = async (req, res, next) => {
-  
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    // If no-user
+    if (!user || !(await bcrypt.compare(password, user.password)))
+      return next(
+        new ApiError(
+          STATUS_CODES.UNAUTHORIZED,
+          "Invalid email or password",
+          "login"
+        )
+      );
+
+    // If user
+    const loginToken = generateToken(user._id);
+
+    // Store login Session in DB
+    await Session.create({
+      user: user._id,
+      token: loginToken,
+    });
+
+    res.cookie("loginToken", loginToken, {
+      httpOnly: true,
+      secure: false, // Change this in production to true
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
+    });
+
+    res.status(STATUS_CODES.OK).json({
+      message: "Login successfull",
+      userId: user._id,
+      user,
+      redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
+      loginToken, //remove in production
+    });
+  } catch (error) {
+    next(error);
+  }
 };

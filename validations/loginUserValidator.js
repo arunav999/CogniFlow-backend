@@ -43,6 +43,9 @@ const loginUserValidator = async (req, res, next) => {
   // Overwrite req.body
   req.body.email = emailSanitized;
   req.body.password = passwordSanitized;
+
+  // Next moddleware/controller
+  next();
 };
 
 export default loginUserValidator;
