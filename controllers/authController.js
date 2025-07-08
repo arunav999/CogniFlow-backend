@@ -18,6 +18,7 @@ import Session from "../models/Session.js";
 // JWT token
 import { generateToken } from "../utils/generateToken.js";
 
+// ===== Register User Controller =====
 export const registerUser = async (req, res, next) => {
   const { firstName, lastName, email, password, role, company, inviteCode } =
     req.body;
@@ -91,4 +92,9 @@ export const registerUser = async (req, res, next) => {
     // Centeralized error handler
     next(error);
   }
+};
+
+// ===== Login User Controller =====
+export const loginUser = async (req, res, next) => {
+  
 };

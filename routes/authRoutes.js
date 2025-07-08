@@ -4,7 +4,7 @@ import { Router } from "express";
 import validateRegisterUser from "../validations/registerUserValidator.js";
 
 // Controllers
-import { registerUser } from "../controllers/authController.js";
+import { registerUser, loginUser } from "../controllers/authController.js";
 
 const router = Router();
 

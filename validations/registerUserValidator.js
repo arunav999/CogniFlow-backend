@@ -1,6 +1,10 @@
+// Error
 import ApiError from "../errors/Apierror.js";
+
+// Constants
 import { STATUS_CODES } from "../constants/statusCodes.js";
 import { ROLES } from "../constants/roles.js";
+import { REGX } from "../constants/regx.js";
 
 const registerUserValidator = async (req, res, next) => {
   const {
@@ -13,15 +17,6 @@ const registerUserValidator = async (req, res, next) => {
     company,
     inviteCode,
   } = req.body;
-
-  // name regx
-  const nameRegex = /^[a-zA-Z]+$/;
-
-  // email regx
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Simple password strength: min 8 chars, max 15 chars, at least 1 number, 1 uppercase, 1 lowercase, 1 specialChar
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,15}$/;
 
   // ===== PRESENSE CHECK =====
   // first name
@@ -109,28 +104,28 @@ const registerUserValidator = async (req, res, next) => {
     );
 
   // Check only letters
-  if (!nameRegex.test(firstNameSanitized))
+  if (!REGX.NAME.test(firstNameSanitized))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "First name must contain only letters (no numbers or symbols)",
       "firstName"
     );
 
-  if (!nameRegex.test(lastNameSanitized))
+  if (!REGX.NAME.test(lastNameSanitized))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Last name must contain only letters (no numbers or symbols)",
       "lastName"
     );
 
-  if (!emailRegex.test(emailSanitized))
+  if (!REGX.EMAIL.test(emailSanitized))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Invalid email format",
       "email"
     );
 
-  if (!passwordRegex.test(passwordSanitized))
+  if (!REGX.PASSWORD.test(passwordSanitized))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Password must be 8-15 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
