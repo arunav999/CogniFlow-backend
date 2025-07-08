@@ -40,6 +40,10 @@ const registerUserValidator = async (req, res, next) => {
       "lastName"
     );
 
+  // email
+  if (!email)
+    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email");
+
   // password
   if (!password)
     throw new ApiError(
