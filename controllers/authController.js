@@ -12,11 +12,12 @@ import { ROLES } from "../constants/roles.js";
 import User from "../models/User.js";
 import Workspace from "../models/Workspace.js";
 
-// Session model
+// Auth model
 import Session from "../models/Auth Models/Session.js";
+import RefreshToken from "../models/Auth Models/Refresh.js";
 
 // JWT token
-import { generateToken } from "../utils/generateToken.js";
+import { generateToken, generateRefreshToken } from "../utils/generateToken.js";
 
 // ===== Register User Controller =====
 export const registerUser = async (req, res, next) => {
@@ -76,7 +77,7 @@ export const registerUser = async (req, res, next) => {
 
     res.cookie("token", signUpToken, {
       httpOnly: true,
-      secure: false, // Change this in production to true
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
@@ -96,7 +97,7 @@ export const registerUser = async (req, res, next) => {
 
 // ===== Login User Controller =====
 export const loginUser = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, remember } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -122,7 +123,7 @@ export const loginUser = async (req, res, next) => {
 
     res.cookie("loginToken", loginToken, {
       httpOnly: true,
-      secure: false, // Change this in production to true
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
@@ -134,6 +135,26 @@ export const loginUser = async (req, res, next) => {
       redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
       loginToken, //remove in production
     });
+
+    // ===== SENDING REFRESH TOKEN =====
+    let refreshToken;
+    if (remember) {
+      refreshToken = generateRefreshToken(user._id);
+
+      // Store it in DB
+      await RefreshToken.create({
+        user: user._id,
+        token: refreshToken,
+      });
+
+      // Cookie for Refresh token
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
+      });
+    }
   } catch (error) {
     next(error);
   }
