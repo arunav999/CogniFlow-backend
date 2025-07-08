@@ -19,12 +19,11 @@ export const registerUser = async (req, res, next) => {
   try {
     // If user exists
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return new ApiError(
-        STATUS_CODES.CONFLICT,
-        "Email already in use",
-        "email"
+    if (existingUser) {
+      return next(
+        new ApiError(STATUS_CODES.CONFLICT, "Email already in use", "email")
       );
+    }
 
     let workspaceId = null;
 
