@@ -12,6 +12,9 @@ import { ROLES } from "../constants/roles.js";
 import User from "../models/User.js";
 import Workspace from "../models/Workspace.js";
 
+// Session model
+import Session from "../models/Session.js";
+
 // JWT token
 import { generateToken } from "../utils/generateToken.js";
 
@@ -64,11 +67,17 @@ export const registerUser = async (req, res, next) => {
     // Create JWT
     const token = generateToken(newUser._id);
 
+    // Store session in DB
+    await Session.create({
+      user: newUser._id,
+      token,
+    });
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: false, // Change this in production to true
       sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, //Expires in 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
 
     res.status(STATUS_CODES.CREATED).json({
@@ -76,6 +85,7 @@ export const registerUser = async (req, res, next) => {
       userId: newUser._id,
       role: newUser.role,
       redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
+      token, // Remove in production
     });
   } catch (error) {
     // Centeralized error handler
