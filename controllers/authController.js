@@ -12,6 +12,9 @@ import { ROLES } from "../constants/roles.js";
 import User from "../models/User.js";
 import Workspace from "../models/Workspace.js";
 
+// JWT token
+import { generateToken } from "../utils/generateToken.js";
+
 export const registerUser = async (req, res, next) => {
   const { firstName, lastName, email, password, role, company, inviteCode } =
     req.body;
@@ -48,19 +51,30 @@ export const registerUser = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, 12);
 
     // If new user
-    const newUser = User.create({
+    const newUser = await User.create({
       firstName,
       lastName,
       email,
       password: passwordHash,
       role,
       workspace: workspaceId,
+      company,
+    });
+
+    // Create JWT
+    const token = generateToken(newUser._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, //Expires in 24 hours
     });
 
     res.status(STATUS_CODES.CREATED).json({
       message: "User created successfully",
-      userId: (await newUser)._id,
-      role: (await newUser).role,
+      userId: newUser._id,
+      role: newUser.role,
       redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
     });
   } catch (error) {

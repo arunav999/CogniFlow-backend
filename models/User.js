@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema(
       ref: "Workspace",
       default: null,
     },
+    company: { type: String, required: true },
   },
   { timestamps: true }
 );
