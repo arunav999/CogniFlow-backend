@@ -8,12 +8,15 @@ import path from "path";
 // Cogniflow Mongoose DB
 import cogniflowDB from "./config/db.js";
 
-// Custom imports
-// const authRoutes = require("./routes/authRoutes");
-// const userRoutes = require("./routes/userRoutes");
-// const workspaceRoutes = require("./routes/workspaceRoutes");
-// const taskRoutes = require("./routes/taskRoutes");
-// const reportRoutes = require("./routes/reportRoutes");
+// Import Routes
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import workspaceRoutes from "./routes/workspaceRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
+
+// Error handler
+import errorHandler from "./errors/errorHandler.js";
 
 const app = express();
 
@@ -32,11 +35,14 @@ cogniflowDB();
 app.use(express.json());
 
 // Routes
-// app.use("/cogniflow/api/v1/auth", authRoutes);
-// app.use("/cogniflow/api/v1/user", userRoutes);
-// app.use("/cogniflow/api/v1/workspace", workspaceRoutes);
-// app.use("/cogniflow/api/v1/task", taskRoutes);
-// app.use("/cogniflow/api/v1/report", reportRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/workspace", workspaceRoutes);
+app.use("/api/v1/task", taskRoutes);
+app.use("/api/v1/report", reportRoutes);
+
+// Error
+app.use(errorHandler);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
