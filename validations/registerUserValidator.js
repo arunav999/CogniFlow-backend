@@ -1,8 +1,8 @@
-import ApiError from "../errors/Apierror";
-import { STATUS_CODES } from "../constants/statusCodes";
-import { ROLES } from "../constants/roles";
+import ApiError from "../errors/Apierror.js";
+import { STATUS_CODES } from "../constants/statusCodes.js";
+import { ROLES } from "../constants/roles.js";
 
-const validateRegisterUser = async (req, res, next) => {
+const registerUserValidator = async (req, res, next) => {
   const {
     firstName,
     lastName,
@@ -165,7 +165,8 @@ const validateRegisterUser = async (req, res, next) => {
   req.body.company = companySanitized;
   req.body.inviteCode = inviteCode?.trim();
 
+  // Next middleware/controller
   next();
 };
 
-export default validateRegisterUser;
+export default registerUserValidator;

@@ -10,10 +10,10 @@ import cogniflowDB from "./config/db.js";
 
 // Import Routes
 import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import workspaceRoutes from "./routes/workspaceRoutes.js";
-import taskRoutes from "./routes/taskRoutes.js";
-import reportRoutes from "./routes/reportRoutes.js";
+// import userRoutes from "./routes/userRoutes.js";
+// import workspaceRoutes from "./routes/workspaceRoutes.js";
+// import taskRoutes from "./routes/taskRoutes.js";
+// import reportRoutes from "./routes/reportRoutes.js";
 
 // Error handler
 import errorHandler from "./errors/errorHandler.js";
@@ -36,10 +36,10 @@ app.use(express.json());
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/workspace", workspaceRoutes);
-app.use("/api/v1/task", taskRoutes);
-app.use("/api/v1/report", reportRoutes);
+// app.use("/api/v1/user", userRoutes);
+// app.use("/api/v1/workspace", workspaceRoutes);
+// app.use("/api/v1/task", taskRoutes);
+// app.use("/api/v1/report", reportRoutes);
 
 // Error
 app.use(errorHandler);

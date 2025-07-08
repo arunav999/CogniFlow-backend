@@ -1,4 +1,4 @@
-import { STATUS_CODES } from "../constants/statusCodes";
+import { STATUS_CODES } from "../constants/statusCodes.js";
 
 const errorHandler = (err, req, res, next) => {
   const status = err.statusCode || STATUS_CODES.SERVER_ERROR;
