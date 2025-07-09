@@ -9,7 +9,7 @@ import { REGX } from "../constants/regx.js";
 const registerUserValidator = async (req, res, next) => {
   const {
     firstName,
-    lastName,
+    lastName="",
     email,
     password,
     confirmPassword,
@@ -28,12 +28,12 @@ const registerUserValidator = async (req, res, next) => {
     );
 
   // last name
-  if (!lastName)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Last name is required",
-      "lastName"
-    );
+  // if (!lastName)
+  //   throw new ApiError(
+  //     STATUS_CODES.BAD_REQUEST,
+  //     "Last name is required",
+  //     "lastName"
+  //   );
 
   // email
   if (!email)
@@ -82,7 +82,7 @@ const registerUserValidator = async (req, res, next) => {
       "firstName"
     );
 
-  if (lastNameSanitized.length < 3)
+  if (lastNameSanitized.length > 0 && lastNameSanitized.length < 3)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Last name must be 3 characters",
@@ -111,7 +111,7 @@ const registerUserValidator = async (req, res, next) => {
       "firstName"
     );
 
-  if (!REGX.NAME.test(lastNameSanitized))
+  if (lastNameSanitized.length > 0 && !REGX.NAME.test(lastNameSanitized))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Last name must contain only letters (no numbers or symbols)",
