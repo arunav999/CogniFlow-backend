@@ -13,8 +13,8 @@ import User from "../models/User.js";
 import Workspace from "../models/Workspace.js";
 
 // Auth model
-import Session from "../models/Auth Models/Session.js";
-import RefreshToken from "../models/Auth Models/Refresh.js";
+import Session from "../models/Token Models/Session.js";
+import RefreshToken from "../models/Token Models/Refresh.js";
 
 // JWT token
 import { generateToken, generateRefreshToken } from "../utils/generateToken.js";

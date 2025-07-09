@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
-import Session from "../models/Auth Models/Session.js";
+import Session from "../models/Token Models/Session.js";
 
 import ApiError from "../errors/Apierror.js";
 import { STATUS_CODES } from "../constants/statusCodes.js";
@@ -10,7 +10,7 @@ const protect = async (req, res, next) => {
   try {
     // Get cookies
     const token = req.cookies?.loginToken || req.cookies?.token;
-    
+
     if (!token)
       return next(
         new ApiError(
