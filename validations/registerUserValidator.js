@@ -9,7 +9,7 @@ import { REGX } from "../constants/regx.js";
 const registerUserValidator = async (req, res, next) => {
   const {
     firstName,
-    lastName = "",
+    lastName="",
     email,
     password,
     confirmPassword,
@@ -123,14 +123,6 @@ const registerUserValidator = async (req, res, next) => {
       "Password must be 8-15 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
       "password"
     );
-
-  if (REGX.INVALID_COMPANY_CHARS.test(companySanitized)) {
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Company name contains invalid characters",
-      "company"
-    );
-  }
 
   // Role Base
   if (role === ROLES.ADMIN && !company)
