@@ -72,7 +72,7 @@ export const registerUser = async (req, res, next) => {
     // Store session in DB
     await Session.create({
       user: newUser._id,
-      signUpToken,
+      token: signUpToken,
     });
 
     res.cookie("token", signUpToken, {
@@ -87,7 +87,6 @@ export const registerUser = async (req, res, next) => {
       userId: newUser._id,
       role: newUser.role,
       redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
-      signUpToken, // Remove in production
     });
   } catch (error) {
     // Centeralized error handler
@@ -100,6 +99,7 @@ export const loginUser = async (req, res, next) => {
   const { email, password, remember } = req.body;
 
   try {
+    // Get user
     const user = await User.findOne({ email });
 
     // If no-user
@@ -113,28 +113,6 @@ export const loginUser = async (req, res, next) => {
       );
 
     // If user
-    const loginToken = generateToken(user._id);
-
-    // Store login Session in DB
-    await Session.create({
-      user: user._id,
-      token: loginToken,
-    });
-
-    res.cookie("loginToken", loginToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
-    });
-
-    res.status(STATUS_CODES.OK).json({
-      message: "Login successfull",
-      userId: user._id,
-      user,
-      redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
-      loginToken, //remove in production
-    });
 
     // ===== SENDING REFRESH TOKEN =====
     let refreshToken;
@@ -155,6 +133,28 @@ export const loginUser = async (req, res, next) => {
         maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
       });
     }
+
+    const loginToken = generateToken(user._id);
+
+    // Store login Session in DB
+    await Session.create({
+      user: user._id,
+      token: loginToken,
+    });
+
+    res.cookie("loginToken", loginToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
+    });
+
+    res.status(STATUS_CODES.OK).json({
+      message: "Login successfull",
+      userId: user._id,
+      user,
+      redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
+    });
   } catch (error) {
     next(error);
   }

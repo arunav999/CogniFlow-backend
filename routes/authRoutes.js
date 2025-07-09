@@ -1,5 +1,8 @@
 import { Router } from "express";
 
+// Protect
+import protect from "../middlewares/authMiddleware.js";
+
 // Validate new user
 import validateRegisterUser from "../validations/registerUserValidator.js";
 import validateLoginUser from "../validations/loginUserValidator.js";
@@ -14,6 +17,13 @@ router.post("/register", validateRegisterUser, registerUser);
 
 // Login route
 router.post("/login", validateLoginUser, loginUser);
-router.get("/getUser", (req, res) => res.send("Get user not implemented"));
+
+// Get user route
+router.get("/getUser", protect, (req, res, next) => {
+  res.json({
+    message: "Welcome to your dashboard",
+    user: req.user,
+  });
+});
 
 export default router;
