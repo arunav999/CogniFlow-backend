@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
     lastName: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profileImageUrl: { type: String, default: null },
+    avatar: { url: { type: String }, public_id: { type: String } },
     role: {
       type: String,
       enum: Object.values(ROLES),
