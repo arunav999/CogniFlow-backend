@@ -4,12 +4,12 @@ import multer from "multer";
 import streamifier from "streamifier";
 import { v2 as cloudinary } from "cloudinary";
 
-import User from "../models/User";
+import User from "../models/User.js";
 
-import ApiError from "../errors/Apierror";
-import { STATUS_CODES } from "../constants/statusCodes";
+import ApiError from "../errors/Apierror.js";
+import { STATUS_CODES } from "../constants/statusCodes.js";
 
-import { verifyToken } from "../middlewares/verifyToken";
+import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
-import ApiError from "../errors/Apierror";
-import { STATUS_CODES } from "../constants/statusCodes";
+import ApiError from "../errors/Apierror.js";
+import { STATUS_CODES } from "../constants/statusCodes.js";
 
 export const verifyToken = (req, res, next) => {
   const token = req.cookies.token;
