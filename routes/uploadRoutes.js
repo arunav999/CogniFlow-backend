@@ -31,7 +31,7 @@ router.patch(
   async (req, res, next) => {
     try {
       const userId = req.user._id;
-      const user = await User.findOne(userId);
+      const user = await User.findById(userId);
 
       if (!user)
         return next(new ApiError(STATUS_CODES.NOT_FOUND, "User not found", ""));
