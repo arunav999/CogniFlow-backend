@@ -23,6 +23,17 @@ const protect = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Checking session with db
+    const session = await Session.findOne({ token });
+
+    if (!session)
+      return next(
+        new ApiError(
+          STATUS_CODES.UNAUTHORIZED,
+          "Session expired or invalid. Please login again"
+        )
+      );
+
     // Attach User
     const user = await User.findById(decoded.id).select("-password");
 
