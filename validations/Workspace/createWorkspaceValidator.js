@@ -13,7 +13,7 @@ export const createWorkspaceValidator = (req, res, next) => {
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Workspace name is required",
-      "workspcaeName"
+      "workspaceName"
     );
 
   // no user
@@ -32,6 +32,15 @@ export const createWorkspaceValidator = (req, res, next) => {
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Workspacename must be atleast 5 characters",
+      ""
+    );
+
+  // check if admin?
+  const user = req.user;
+  if (user.role !== "admin")
+    throw new ApiError(
+      STATUS_CODES.FORBIDDEN,
+      "You are not authorized to create workspaces",
       ""
     );
 
