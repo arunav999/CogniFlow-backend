@@ -1,3 +1,6 @@
+// Crypto
+import crypto from "crypto";
+
 // User Model
 import Session from "../../models/Token Models/Session.js";
 import RefreshToken from "../../models/Token Models/Refresh.js";
@@ -9,6 +12,17 @@ export const logoutUser = async (req, res, next) => {
   try {
     const token = req.cookies?.loginToken;
     const refreshToken = req.cookies?.refreshToken;
+
+    // Hash tokens to delete from db
+    const hashedToken = crypto
+      .createHash("sha3-256")
+      .update(token)
+      .digest("hex");
+
+    const hashedRefreshToken = crypto
+      .createHash("sha3-256")
+      .update(refreshToken)
+      .digest("hex");
 
     const cookieOptions = {
       httpOnly: true,
@@ -25,13 +39,13 @@ export const logoutUser = async (req, res, next) => {
 
     // If refresh token available
     if (refreshToken) {
-      await RefreshToken.deleteOne({ token: refreshToken });
+      await RefreshToken.deleteOne({ token: hashedRefreshToken });
       res.clearCookie("refreshToken", cookieOptions);
     }
 
     // If session avilable
     if (token) {
-      await Session.deleteOne({ token });
+      await Session.deleteOne({ token: hashedToken });
       res.clearCookie("loginToken", cookieOptions);
     }
 
