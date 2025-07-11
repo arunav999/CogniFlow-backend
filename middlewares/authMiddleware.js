@@ -1,9 +1,17 @@
+// JWT
 import jwt from "jsonwebtoken";
 
+// Crypto
+import crypto from "crypto";
+
+// Models
 import User from "../models/User.js";
 import Session from "../models/Token Models/Session.js";
 
+// Error
 import ApiError from "../errors/Apierror.js";
+
+// Constant
 import { STATUS_CODES } from "../constants/statusCodes.js";
 
 const protect = async (req, res, next) => {
@@ -20,17 +28,24 @@ const protect = async (req, res, next) => {
         )
       );
 
-    // Verify token
+    // Verify JWT signature
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Hash token to check db
+    const hashedToken = crypto
+      .createHash("sha3-256")
+      .update(token)
+      .digest("hex");
+
     // Checking session with db
-    const session = await Session.findOne({ token });
+    const session = await Session.findOne({ token: hashedToken });
 
     if (!session)
       return next(
         new ApiError(
           STATUS_CODES.UNAUTHORIZED,
-          "Session expired or invalid. Please login again"
+          "Session expired or invalid. Please login again",
+          ""
         )
       );
 

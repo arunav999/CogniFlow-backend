@@ -22,8 +22,8 @@ export const verifyToken = async (req, res, next) => {
     // Verify JWT Signature
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Hash token to chek db
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    // Hash token to check db
+    const hashedToken = crypto.createHash("sha3-256").update(token).digest("hex");
 
     // Check db
     const session = await Session.findOne({ token: hashedToken });

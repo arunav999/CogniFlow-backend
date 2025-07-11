@@ -18,7 +18,10 @@ import Session from "../../models/Token Models/Session.js";
 import RefreshToken from "../../models/Token Models/Refresh.js";
 
 // JWT token
-import { generateToken } from "../../utils/generateToken.js";
+import {
+  generateToken,
+  generateRefreshToken,
+} from "../../utils/generateToken.js";
 
 // ===== Login User Controller =====
 export const loginUser = async (req, res, next) => {
@@ -44,7 +47,7 @@ export const loginUser = async (req, res, next) => {
     if (remember) {
       const refreshToken = generateRefreshToken(user._id);
       const hashedRefreshToken = crypto
-        .createHash("sha256")
+        .createHash("sha3-256")
         .update(refreshToken)
         .digest("hex");
 
@@ -66,7 +69,7 @@ export const loginUser = async (req, res, next) => {
 
     const loginToken = generateToken(user._id);
     const hashedLoginToken = crypto
-      .createHash("sha256")
+      .createHash("sha3-256")
       .update(loginToken)
       .digest("hex");
 

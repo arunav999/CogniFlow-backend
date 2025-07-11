@@ -73,7 +73,7 @@ export const registerUser = async (req, res, next) => {
 
     // Hash JWT
     const hashedSignupToken = crypto
-      .createHash("sha256")
+      .createHash("sha3-256")
       .update(signUpToken)
       .digest("hex");
 
