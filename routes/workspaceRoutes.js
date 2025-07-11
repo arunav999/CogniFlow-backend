@@ -11,15 +11,18 @@ const router = Router();
 
 // ========== ROUTES ==========
 // Create workspace
-router.post("/create-workspace", protect);
+router.post("/", protect);
 
 // Get workspace
-router.get("/get-workspace", protect);
+router.get("/", protect);
 
-// Update workspace
-router.patch("/update-workspace", protect);
+// Get a workspace using id
+router.get("/:id", protect);
 
-// Delete workspace
-router.delete("/delete-workspace", protect);
+// Update workspace using id
+router.patch("/:id", protect);
+
+// Delete workspace using id
+router.delete("/:id", protect);
 
 export default router;
