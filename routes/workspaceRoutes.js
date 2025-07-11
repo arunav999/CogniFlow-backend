@@ -4,14 +4,16 @@ import { Router } from "express";
 import protect from "../middlewares/authMiddleware.js";
 
 // Validations
+import { createWorkspaceValidator } from "../validations/Workspace/createWorkspaceValidator.js";
 
 // Controllers
+import { createWorkspaceController } from "../controllers/Workspaces/createWorkspaceController.js";
 
 const router = Router();
 
 // ========== ROUTES ==========
 // Create workspace
-router.post("/", protect);
+router.post("/", protect, createWorkspaceValidator, createWorkspaceController);
 
 // Get workspace
 router.get("/", protect);

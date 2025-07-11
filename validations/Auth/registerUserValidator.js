@@ -6,7 +6,7 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
 import { REGX } from "../../constants/regx.js";
 
-const registerUserValidator = async (req, res, next) => {
+const registerUserValidator = (req, res, next) => {
   const {
     firstName,
     lastName="",
