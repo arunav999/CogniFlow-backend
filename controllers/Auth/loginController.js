@@ -90,7 +90,6 @@ export const loginUser = async (req, res, next) => {
     res.status(STATUS_CODES.OK).json({
       message: "Login successfull",
       userId: user._id,
-      user,
       redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
     });
   } catch (error) {
