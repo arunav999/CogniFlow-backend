@@ -12,8 +12,8 @@ import cogniflowDB from "./config/db.js";
 // Import Routes
 import authRoutes from "./routes/authRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import workspaceRoutes from "./routes/workspaceRoutes.js";
 // import userRoutes from "./routes/userRoutes.js";
-// import workspaceRoutes from "./routes/workspaceRoutes.js";
 // import taskRoutes from "./routes/taskRoutes.js";
 // import reportRoutes from "./routes/reportRoutes.js";
 
@@ -40,8 +40,8 @@ app.use(cookieParser());
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/upload", uploadRoutes);
+app.use("/api/v1/workspace", workspaceRoutes);
 // app.use("/api/v1/user", userRoutes);
-// app.use("/api/v1/workspace", workspaceRoutes);
 // app.use("/api/v1/task", taskRoutes);
 // app.use("/api/v1/report", reportRoutes);
 

@@ -4,8 +4,8 @@ import { Router } from "express";
 import protect from "../middlewares/authMiddleware.js";
 
 // Validate new user
-import validateRegisterUser from "../validations/registerUserValidator.js";
-import validateLoginUser from "../validations/loginUserValidator.js";
+import validateRegisterUser from "../validations/Auth/registerUserValidator.js";
+import validateLoginUser from "../validations/Auth/loginUserValidator.js";
 
 // Controllers
 import { registerUser } from "../controllers/Auth/registerController.js";

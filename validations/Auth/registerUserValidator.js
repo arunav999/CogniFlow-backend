@@ -1,10 +1,10 @@
 // Error
-import ApiError from "../errors/Apierror.js";
+import ApiError from "../../errors/Apierror.js";
 
 // Constants
-import { STATUS_CODES } from "../constants/statusCodes.js";
-import { ROLES } from "../constants/roles.js";
-import { REGX } from "../constants/regx.js";
+import { STATUS_CODES } from "../../constants/statusCodes.js";
+import { ROLES } from "../../constants/roles.js";
+import { REGX } from "../../constants/regx.js";
 
 const registerUserValidator = async (req, res, next) => {
   const {
