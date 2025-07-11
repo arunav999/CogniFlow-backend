@@ -52,7 +52,7 @@ export const loginUser = async (req, res, next) => {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "Strict",
         maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
       });
     }
@@ -68,7 +68,7 @@ export const loginUser = async (req, res, next) => {
     res.cookie("loginToken", loginToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "Strict",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
 

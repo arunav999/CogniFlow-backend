@@ -1,5 +1,5 @@
 // Models
-import User from "../../models/User";
+import User from "../../models/User.js";
 
 // Error
 import ApiError from "../../errors/Apierror.js";

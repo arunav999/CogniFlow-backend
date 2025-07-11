@@ -11,6 +11,8 @@ import validateLoginUser from "../validations/loginUserValidator.js";
 import { registerUser } from "../controllers/Auth/registerController.js";
 import { loginUser } from "../controllers/Auth/loginController.js";
 import { checkUserExist } from "../controllers/Auth/checkUserEmailController.js";
+import { getUser } from "../controllers/Auth/getUserController.js";
+import { logoutUser } from "../controllers/Auth/logoutUserController.js";
 
 const router = Router();
 
@@ -25,14 +27,9 @@ router.post("/login", validateLoginUser, loginUser);
 router.get("/check-email", checkUserExist);
 
 // Get user route
-router.get("/getUser", protect, (req, res, next) => {
-  res.json({
-    message: "Welcome to your dashboard",
-    user: req.user,
-  });
-});
+router.get("/getUser", protect, getUser);
 
 // Logout user route
-router.post("/logout", protect);
+router.post("/logout", protect, logoutUser);
 
 export default router;

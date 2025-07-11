@@ -77,7 +77,7 @@ export const registerUser = async (req, res, next) => {
     res.cookie("token", signUpToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "Strict",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
 
