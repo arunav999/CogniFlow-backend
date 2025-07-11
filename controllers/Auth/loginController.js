@@ -1,6 +1,9 @@
 // Bcrypt
 import bcrypt from "bcryptjs";
 
+// Crypto
+import crypto from "crypto";
+
 // Error
 import ApiError from "../../errors/Apierror.js";
 
@@ -38,14 +41,17 @@ export const loginUser = async (req, res, next) => {
     // If user
 
     // ===== SENDING REFRESH TOKEN =====
-    let refreshToken;
     if (remember) {
-      refreshToken = generateRefreshToken(user._id);
+      const refreshToken = generateRefreshToken(user._id);
+      const hashedRefreshToken = crypto
+        .createHash("sha256")
+        .update(refreshToken)
+        .digest("hex");
 
       // Store it in DB
       await RefreshToken.create({
         user: user._id,
-        token: refreshToken,
+        token: hashedRefreshToken,
       });
 
       // Cookie for Refresh token
@@ -53,22 +59,28 @@ export const loginUser = async (req, res, next) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "Strict",
+        path: "/",
         maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
       });
     }
 
     const loginToken = generateToken(user._id);
+    const hashedLoginToken = crypto
+      .createHash("sha256")
+      .update(loginToken)
+      .digest("hex");
 
     // Store login Session in DB
     await Session.create({
       user: user._id,
-      token: loginToken,
+      token: hashedLoginToken,
     });
 
     res.cookie("loginToken", loginToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      path: "/",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
 

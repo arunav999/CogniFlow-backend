@@ -1,6 +1,9 @@
 // Bcrypt
 import bcrypt from "bcryptjs";
 
+// Crypto
+import crypto from "crypto";
+
 // Error
 import ApiError from "../../errors/Apierror.js";
 
@@ -68,16 +71,23 @@ export const registerUser = async (req, res, next) => {
     // Create JWT
     const signUpToken = generateToken(newUser._id);
 
+    // Hash JWT
+    const hashedSignupToken = crypto
+      .createHash("sha256")
+      .update(signUpToken)
+      .digest("hex");
+
     // Store session in DB
     await Session.create({
       user: newUser._id,
-      token: signUpToken,
+      token: hashedSignupToken,
     });
 
     res.cookie("token", signUpToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      path: "/",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
 

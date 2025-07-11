@@ -14,6 +14,7 @@ export const logoutUser = async (req, res, next) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      path: "/",
     };
 
     // If no tokens
