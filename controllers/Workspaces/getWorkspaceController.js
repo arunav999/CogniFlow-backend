@@ -4,6 +4,7 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 // Models
 import Workspace from "../../models/Workspace.js";
 
+// Get all workspaces
 export const getAllWorkspaces = async (req, res, next) => {
   try {
     // Get workspace
@@ -21,3 +22,5 @@ export const getAllWorkspaces = async (req, res, next) => {
     next(error);
   }
 };
+
+// Get a single workspace by id
