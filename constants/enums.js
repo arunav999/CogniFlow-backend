@@ -5,11 +5,17 @@ export const PROJECT_STATUS = {
   DEACTIVE: "deactive",
 };
 
-// TASK STATUS
-export const TASK_STATUS = {
+// STATUS
+export const STATUS = {
   TODO: "todo",
   IN_PROGRESS: "in_progress",
   DONE: "done",
+};
+
+// TICKET TYPE
+export const TICKET_TYPE = {
+  FEATURE: "feature",
+  BUG: "Bug",
 };
 
 // PRIORITY
@@ -17,10 +23,4 @@ export const PRIORITY = {
   LOW: "low",
   MEDIUM: "medium",
   HIGH: "high",
-};
-
-// FILE TYPE
-export const FILE_TYPE = {
-  IMAGE: "image",
-  DOCUMENT: "document",
 };

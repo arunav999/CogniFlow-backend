@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-import { PROJECT_STATUS } from "../constants/enums";
+import { PROJECT_STATUS } from "../constants/enums.js";
+
+const refType = mongoose.Schema.Types.ObjectId;
 
 const ProjectSchema = new mongoose.Schema(
   {
@@ -11,9 +13,10 @@ const ProjectSchema = new mongoose.Schema(
     },
     projectName: { type: String, required: true },
     projectDescription: { type: String },
-    workspaceRef: { type: mongoose.Schema.Types.ObjectId, ref: "Workspace" },
-    createdByUserId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    assignedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    workspaceRef: { type: refType, ref: "Workspace" },
+    createdByUserId: { type: refType, ref: "User" },
+    assignedMembers: [{ type: refType, ref: "User" }],
+    tickets: [{ type: refType, ref: "Ticket" }],
   },
   { timestamps: true }
 );
