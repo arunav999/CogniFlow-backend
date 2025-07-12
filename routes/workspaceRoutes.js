@@ -8,6 +8,7 @@ import { createWorkspaceValidator } from "../validations/Workspace/createWorkspa
 
 // Controllers
 import { createWorkspaceController } from "../controllers/Workspaces/createWorkspaceController.js";
+import { getAllWorkspaces } from "../controllers/Workspaces/getWorkspaceController.js";
 
 const router = Router();
 
@@ -16,7 +17,7 @@ const router = Router();
 router.post("/", protect, createWorkspaceValidator, createWorkspaceController);
 
 // Get workspace
-router.get("/", protect);
+router.get("/", protect, getAllWorkspaces);
 
 // Get a workspace using id
 router.get("/:id", protect);

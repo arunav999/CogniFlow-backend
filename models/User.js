@@ -17,11 +17,12 @@ const UserSchema = new mongoose.Schema(
       enum: Object.values(ROLES),
       default: ROLES.DEVELOPER,
     }, //Role based access
-    workspace: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Workspace",
-      default: null,
-    },
+    workspaces: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Workspace",
+      },
+    ],
     company: { type: String, required: true },
   },
   { timestamps: true }
