@@ -80,6 +80,7 @@ export const loginUser = async (req, res, next) => {
     });
 
     res.status(STATUS_CODES.OK).json({
+      success: true,
       message: "Login successfull",
       userId: user._id,
       firstName: user.firstName,

@@ -9,8 +9,8 @@ export const getUser = async (req, res, next) => {
       user: {
         _id: user._id,
         avatar: {
-          imageLink: user.avatar.url,
-          imageId: user.avatar.public_id,
+          url: user.avatar.url,
+          public_id: user.avatar.public_id,
         },
         firstName: user.firstName,
         lastName: user.lastName,

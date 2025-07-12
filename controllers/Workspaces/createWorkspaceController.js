@@ -30,8 +30,11 @@ export const createWorkspaceController = async (req, res, next) => {
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "Workspace created successfully",
-      newWorkspaceId,
-      details: newWorkspace,
+      workspaceId: newWorkspaceId,
+      workspaceName: newWorkspace.workspaceName,
+      createdBy: newWorkspace.createdByUserId,
+      workspaceMembers: newWorkspace.workspaceMembers,
+      projects: newWorkspace.projects,
     });
   } catch (error) {
     next(error);
