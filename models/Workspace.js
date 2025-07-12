@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
+const refType = mongoose.Schema.Types.ObjectId;
+
 const WorkspaceSchema = new mongoose.Schema(
   {
     workspaceName: { type: String, required: true },
     workspaceDescription: { type: String, default: null },
-    createdByUserId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    workspaceMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+    createdByUserId: { type: refType, ref: "User" },
+    updatedByUserId: { type: refType, ref: "User", default: null },
+    workspaceMembers: [{ type: refType, ref: "User" }],
+    projects: [{ type: refType, ref: "Project" }],
   },
   { timestamps: true }
 );

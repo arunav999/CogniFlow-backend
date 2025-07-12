@@ -8,12 +8,13 @@ import Workspace from "../../models/Workspace.js";
 export const createWorkspaceController = async (req, res, next) => {
   const userId = req.user._id;
 
-  const { workspaceName } = req.body;
+  const { workspaceName, workspaceDescription } = req.body;
 
   try {
     // Creating workspace
     const newWorkspace = await Workspace.create({
       workspaceName,
+      workspaceDescription,
       createdByUserId: userId,
       workspaceMembers: [userId],
     });
@@ -34,6 +35,7 @@ export const createWorkspaceController = async (req, res, next) => {
       workspaceName: newWorkspace.workspaceName,
       workspaceDescription: newWorkspace.workspaceDescription,
       createdBy: newWorkspace.createdByUserId,
+      updatedBy: newWorkspace.updatedByUserId,
       workspaceMembers: newWorkspace.workspaceMembers,
       projects: newWorkspace.projects,
     });

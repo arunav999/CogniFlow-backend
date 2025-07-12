@@ -5,7 +5,7 @@ import ApiError from "../../errors/Apierror.js";
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
 export const createWorkspaceValidator = (req, res, next) => {
-  const { workspaceName } = req.body;
+  const { workspaceName, workspaceDescription = "" } = req.body;
 
   // ========== PRESENSE CHECK ==========
   // workspace name
@@ -26,12 +26,23 @@ export const createWorkspaceValidator = (req, res, next) => {
 
   // ========== CONTENT VALIDATION ==========
   let workspaceNameSanitized = workspaceName.trim();
+  let workspaceDescriptionSanitized = workspaceDescription.trim();
 
   // check length
   if (workspaceNameSanitized.length < 5)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Workspacename must be atleast 5 characters",
+      ""
+    );
+
+  if (
+    workspaceDescriptionSanitized.length > 0 &&
+    workspaceDescriptionSanitized.length < 15
+  )
+    throw new ApiError(
+      STATUS_CODES.BAD_REQUEST,
+      "Workspace description must be atleast 15 characters",
       ""
     );
 
@@ -46,6 +57,7 @@ export const createWorkspaceValidator = (req, res, next) => {
 
   // Overwrite req.body
   req.body.workspaceName = workspaceNameSanitized;
+  req.body.workspaceDescription = workspaceDescriptionSanitized;
 
   // Next middleware/controller
   next();
