@@ -32,6 +32,7 @@ export const createWorkspaceController = async (req, res, next) => {
       message: "Workspace created successfully",
       workspaceId: newWorkspaceId,
       workspaceName: newWorkspace.workspaceName,
+      workspaceDescription: newWorkspace.workspaceDescription,
       createdBy: newWorkspace.createdByUserId,
       workspaceMembers: newWorkspace.workspaceMembers,
       projects: newWorkspace.projects,
