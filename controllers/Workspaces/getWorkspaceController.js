@@ -16,7 +16,13 @@ export const getAllWorkspaces = async (req, res, next) => {
     });
 
     res.status(STATUS_CODES.OK).json({
-      workspace: getAllWorkspacesAdmin,
+      workspaces: getAllWorkspacesAdmin.map((item) => ({
+        id: item._id,
+        name: item.workspaceName,
+        createdBy: item.createdByUserId,
+        members: item.workspaceMembers,
+        projects: item.projects,
+      })),
     });
   } catch (error) {
     next(error);
@@ -24,3 +30,22 @@ export const getAllWorkspaces = async (req, res, next) => {
 };
 
 // Get a single workspace by id
+export const getWorkspaceById = async (req, res, next) => {
+  try {
+    const workspaceId = req.params.id;
+
+    const findWorkspace = await Workspace.findById(workspaceId);
+
+    res.status(STATUS_CODES.OK).json({
+      workspace: {
+        id: findWorkspace._id,
+        name: findWorkspace.workspaceName,
+        projects: findWorkspace.projects,
+        createdBy: findWorkspace.createdByUserId,
+        members: findWorkspace.workspaceMembers,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
