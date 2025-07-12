@@ -1,9 +1,6 @@
 // Bcrypt
 import bcrypt from "bcryptjs";
 
-// Crypto
-import crypto from "crypto";
-
 // Error
 import ApiError from "../../errors/Apierror.js";
 
@@ -17,11 +14,12 @@ import User from "../../models/User.js";
 import Session from "../../models/Token Models/Session.js";
 import RefreshToken from "../../models/Token Models/Refresh.js";
 
-// JWT token
+// Utils
 import {
   generateToken,
   generateRefreshToken,
 } from "../../utils/generateToken.js";
+import { cryptoHash } from "../../utils/generateHash.js";
 
 // ===== Login User Controller =====
 export const loginUser = async (req, res, next) => {
@@ -46,10 +44,7 @@ export const loginUser = async (req, res, next) => {
     // ===== SENDING REFRESH TOKEN =====
     if (remember) {
       const refreshToken = generateRefreshToken(user._id);
-      const hashedRefreshToken = crypto
-        .createHash("sha3-256")
-        .update(refreshToken)
-        .digest("hex");
+      const hashedRefreshToken = cryptoHash(refreshToken);
 
       // Store it in DB
       await RefreshToken.create({
@@ -68,10 +63,7 @@ export const loginUser = async (req, res, next) => {
     }
 
     const loginToken = generateToken(user._id);
-    const hashedLoginToken = crypto
-      .createHash("sha3-256")
-      .update(loginToken)
-      .digest("hex");
+    const hashedLoginToken = cryptoHash(loginToken);
 
     // Store login Session in DB
     await Session.create({

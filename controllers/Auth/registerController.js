@@ -1,9 +1,3 @@
-// Bcrypt
-import bcrypt from "bcryptjs";
-
-// Crypto
-import crypto from "crypto";
-
 // Error
 import ApiError from "../../errors/Apierror.js";
 
@@ -18,8 +12,9 @@ import Workspace from "../../models/Workspace.js";
 // Auth model
 import Session from "../../models/Token Models/Session.js";
 
-// JWT token
+// Utils
 import { generateToken } from "../../utils/generateToken.js";
+import { bcryptHash, cryptoHash } from "../../utils/generateHash.js";
 
 // ===== Register User Controller =====
 export const registerUser = async (req, res, next) => {
@@ -55,7 +50,7 @@ export const registerUser = async (req, res, next) => {
     }
 
     // Hash password
-    const passwordHash = await bcrypt.hash(password, 12);
+    const passwordHash = await bcryptHash(password);
 
     // If new user
     const newUser = await User.create({
@@ -72,10 +67,7 @@ export const registerUser = async (req, res, next) => {
     const signUpToken = generateToken(newUser._id);
 
     // Hash JWT
-    const hashedSignupToken = crypto
-      .createHash("sha3-256")
-      .update(signUpToken)
-      .digest("hex");
+    const hashedSignupToken = cryptoHash(signUpToken);
 
     // Store session in DB
     await Session.create({
