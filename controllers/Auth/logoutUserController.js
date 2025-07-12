@@ -8,22 +8,16 @@ import RefreshToken from "../../models/Token Models/Refresh.js";
 // Constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Utils
+import { cryptoHash } from "../../utils/generateHash.js";
+
 export const logoutUser = async (req, res, next) => {
   try {
-    const token = req.cookies?.loginToken;
+    const signUpToken = req.cookies?.token;
+    const loginToken = req.cookies?.loginToken;
     const refreshToken = req.cookies?.refreshToken;
 
-    // Hash tokens to delete from db
-    const hashedToken = crypto
-      .createHash("sha3-256")
-      .update(token)
-      .digest("hex");
-
-    const hashedRefreshToken = crypto
-      .createHash("sha3-256")
-      .update(refreshToken)
-      .digest("hex");
-
+    // Cookie options
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -31,22 +25,39 @@ export const logoutUser = async (req, res, next) => {
       path: "/",
     };
 
-    // If no tokens
-    if (!token && !refreshToken)
-      return res
-        .status(STATUS_CODES.OK)
-        .json({ success: true, message: "Already logged out" });
-
-    // If refresh token available
-    if (refreshToken) {
-      await RefreshToken.deleteOne({ token: hashedRefreshToken });
-      res.clearCookie("refreshToken", cookieOptions);
+    // if no tokens
+    if (!signUpToken && !loginToken && !refreshToken) {
+      return res.status(STATUS_CODES.OK).json({
+        success: true,
+        message: "Already logged out",
+      });
     }
 
-    // If session avilable
-    if (token) {
-      await Session.deleteOne({ token: hashedToken });
+    // If signuptoken
+    if (signUpToken) {
+      const hashedSignupToken = cryptoHash(signUpToken);
+
+      // Delete from db
+      await Session.deleteOne({ token: hashedSignupToken });
+      res.clearCookie("token", cookieOptions);
+    }
+
+    // If login token
+    if (loginToken) {
+      const hashedLoginToken = cryptoHash(loginToken);
+
+      // Delete from db
+      await Session.deleteOne({ token: hashedLoginToken });
       res.clearCookie("loginToken", cookieOptions);
+    }
+
+    // If refresh token
+    if (refreshToken) {
+      const hashedRefreshToken = cryptoHash(refreshToken);
+
+      // delete from db
+      await RefreshToken.deleteOne({ token: hashedRefreshToken });
+      res.clearCookie("refreshToken", cookieOptions);
     }
 
     res

@@ -94,7 +94,7 @@ export const registerUser = async (req, res, next) => {
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "User created successfully",
-      userId: newUser._id,
+      userId: newUser,
       role: newUser.role,
       redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
     });
