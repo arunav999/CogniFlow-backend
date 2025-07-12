@@ -1,3 +1,10 @@
+// PROJECT STATUS
+export const PROJECT_STATUS = {
+  ACTIVE: "active",
+  ARCHIVE: "archived",
+  DEACTIVE: "deactive",
+};
+
 // TASK STATUS
 export const TASK_STATUS = {
   TODO: "todo",
