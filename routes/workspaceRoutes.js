@@ -13,6 +13,7 @@ import {
   getWorkspaceById,
 } from "../controllers/Workspaces/getWorkspaceController.js";
 import { patchWorkspaceById } from "../controllers/Workspaces/patchWorkspaceController.js";
+import { deleteWorkspaceById } from "../controllers/Workspaces/deleteWorkspace.js";
 
 const router = Router();
 
@@ -30,6 +31,6 @@ router.get("/:id", protect, getWorkspaceById);
 router.patch("/:id", protect, createWorkspaceValidator, patchWorkspaceById);
 
 // Delete workspace using id
-router.delete("/:id", protect);
+router.delete("/:id", protect, deleteWorkspaceById);
 
 export default router;

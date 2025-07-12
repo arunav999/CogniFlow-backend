@@ -10,6 +10,13 @@ export const patchWorkspaceById = async (req, res, next) => {
   const workspaceId = req.params.id;
 
   try {
+    // If no workspace
+    const findWorkspace = await Workspace.findById(workspaceId);
+    if (!findWorkspace)
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .json({ success: false, message: "No workspace found" });
+
     // Find and update
     const updatedWorkspace = await Workspace.findByIdAndUpdate(
       workspaceId,
@@ -21,13 +28,6 @@ export const patchWorkspaceById = async (req, res, next) => {
       },
       { new: true }
     );
-
-    // If no workspace
-    if (!updatedWorkspace)
-      return res.status(STATUS_CODES.NOT_FOUND).json({
-        success: false,
-        message: "Workspace not found",
-      });
 
     // response
     res.status(STATUS_CODES.OK).json({
