@@ -3,6 +3,7 @@ import ApiError from "../../errors/Apierror.js";
 
 // Constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
+import { ROLES } from "../../constants/roles.js";
 
 export const createWorkspaceValidator = (req, res, next) => {
   const { workspaceName, workspaceDescription = "" } = req.body;
@@ -32,7 +33,7 @@ export const createWorkspaceValidator = (req, res, next) => {
   if (workspaceNameSanitized.length < 5)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
-      "Workspacename must be atleast 5 characters",
+      "Workspace name must be atleast 5 characters",
       ""
     );
 
@@ -48,7 +49,7 @@ export const createWorkspaceValidator = (req, res, next) => {
 
   // check if admin?
   const user = req.user;
-  if (user.role !== "admin")
+  if (user.role !== ROLES.ADMIN)
     throw new ApiError(
       STATUS_CODES.FORBIDDEN,
       "You are not authorized to create workspaces",
