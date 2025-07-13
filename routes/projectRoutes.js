@@ -12,7 +12,7 @@ import {
   getAllProjectsController,
   getProjectByIdController,
 } from "../controllers/Projects/getProjectController.js";
-import { pathProjectByIdController } from "../controllers/Projects/patchProjectController.js";
+import { patchProjectByIdController } from "../controllers/Projects/patchProjectController.js";
 import { deleteProjectByIdController } from "../controllers/Projects/deleteProjectController.js";
 
 const router = Router();
@@ -32,7 +32,7 @@ router.patch(
   "/:id",
   protect,
   createProjectValidator,
-  pathProjectByIdController
+  patchProjectByIdController
 );
 
 // Delete project by id

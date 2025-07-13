@@ -5,7 +5,7 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
 
-export const pathProjectByIdController = async (req, res, next) => {
+export const patchProjectByIdController = async (req, res, next) => {
   const userId = req.user._id;
   const {
     workspaceId,

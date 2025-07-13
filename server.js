@@ -1,4 +1,4 @@
-// 3rd party imports
+/* ========== 3rd-party imports ========== */
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
@@ -6,7 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
 
-// Cogniflow Mongoose DB
+/* ========== COGNIFLOW-DB MONGO / MONGOOSE ========== */
 import cogniflowDB from "./config/db.js";
 
 // Import Routes
@@ -14,16 +14,14 @@ import authRoutes from "./routes/authRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
-// import userRoutes from "./routes/userRoutes.js";
-// import taskRoutes from "./routes/taskRoutes.js";
-// import reportRoutes from "./routes/reportRoutes.js";
+import ticketRoutes from "./routes/ticketRoutes.js";
 
-// Error handler
+/* ========== ERROR HANDLER ========== */
 import errorHandler from "./errors/errorHandler.js";
 
 const app = express();
 
-// Middleware to handle CORS
+/* ========== CORS - MIDDLEWARE ========== */
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -31,25 +29,25 @@ app.use(
   })
 );
 
-// Connect DB
+/* ========== CONNECT DB ========== */
 cogniflowDB();
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-// Routes
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/upload", uploadRoutes);
-app.use("/api/v1/workspace", workspaceRoutes);
-app.use("/api/v1/project", projectRoutes);
-// app.use("/api/v1/user", userRoutes);
-// app.use("/api/v1/task", taskRoutes);
-// app.use("/api/v1/report", reportRoutes);
+/* ========== ROUTES ========== */
+const baseRoute = "/api/v1";
 
-// Error
+app.use(`${baseRoute}/auth`, authRoutes);
+app.use(`${baseRoute}/upload`, uploadRoutes);
+app.use(`${baseRoute}/workspace`, workspaceRoutes);
+app.use(`${baseRoute}/project`, projectRoutes);
+app.use(`${baseRoute}/ticket`, ticketRoutes);
+
+/* ========== ERROR MIDDLEWARE ========== */
 app.use(errorHandler);
 
-// Start Server
+/* ========== START SERVER ========== */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
