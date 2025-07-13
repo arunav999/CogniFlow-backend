@@ -16,7 +16,7 @@ export const getUser = async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        workspace: user.workspace,
+        workspaces: user.workspaces,
         company: user.company,
       },
     });
