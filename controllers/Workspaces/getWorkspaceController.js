@@ -22,13 +22,15 @@ export const getAllWorkspaces = async (req, res, next) => {
     }
 
     res.status(STATUS_CODES.OK).json({
-      workspaces: getAllWorkspacesAdmin.map((item) => ({
-        id: item._id,
-        name: item.workspaceName,
-        description: item.workspaceDescription,
-        createdBy: item.createdByUserId,
-        members: item.workspaceMembers,
-        projects: item.projects,
+      succes: true,
+      workspaces: getAllWorkspacesAdmin.map((workspace) => ({
+        id: workspace._id,
+        name: workspace.workspaceName,
+        description: workspace.workspaceDescription,
+        createdBy: workspace.createdByUserId,
+        updatedBy: workspace.updatedByUserId,
+        members: workspace.workspaceMembers,
+        projects: workspace.projects,
       })),
     });
   } catch (error) {
@@ -56,6 +58,7 @@ export const getWorkspaceById = async (req, res, next) => {
         description: findWorkspace.workspaceDescription,
         projects: findWorkspace.projects,
         createdBy: findWorkspace.createdByUserId,
+        updatedBy: findWorkspace.updatedByUserId,
         members: findWorkspace.workspaceMembers,
       },
     });

@@ -58,6 +58,7 @@ export const createProjectController = async (req, res, next) => {
       projectIcon: newProject.projectIcon,
       workspaceRef: newProject.workspaceRef,
       createdByUser: newProject.createdByUserId,
+      updateedByUser: newProject.updatedByUserId,
       assignedMembers: newProject.assignedMembers,
       tickets: newProject.tickets,
     });
