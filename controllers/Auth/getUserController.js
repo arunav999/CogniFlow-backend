@@ -6,6 +6,7 @@ export const getUser = async (req, res, next) => {
     const user = req.user;
 
     res.status(STATUS_CODES.OK).json({
+      success: true,
       user: {
         _id: user._id,
         avatar: {

@@ -51,16 +51,18 @@ export const createProjectController = async (req, res, next) => {
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "Project created successfully",
-      projectId: newProjectId,
-      projectStatus: newProject.projectStatus,
-      projectName: newProject.projectName,
-      projectDescription: newProject.projectDescription,
-      projectIcon: newProject.projectIcon,
-      workspaceRef: newProject.workspaceRef,
-      createdByUser: newProject.createdByUserId,
-      updateedByUser: newProject.updatedByUserId,
-      assignedMembers: newProject.assignedMembers,
-      tickets: newProject.tickets,
+      projectDetails: {
+        id: newProjectId,
+        status: newProject.projectStatus,
+        name: newProject.projectName,
+        description: newProject.projectDescription,
+        icon: newProject.projectIcon,
+        workspaceRef: newProject.workspaceRef,
+        createdByUser: newProject.createdByUserId,
+        updateedByUser: newProject.updatedByUserId,
+        assignedMembers: newProject.assignedMembers,
+        tickets: newProject.tickets,
+      },
     });
   } catch (error) {
     next(error);

@@ -82,17 +82,19 @@ export const loginUser = async (req, res, next) => {
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Login successfull",
-      userId: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      avatar: {
-        url: user.avatar.url,
-        public_id: user.avatar.public_id,
+      userDetails: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatar: {
+          url: user.avatar.url,
+          public_id: user.avatar.public_id,
+        },
+        role: user.role,
+        workspaces: user.workspaces,
+        company: user.company,
       },
-      role: user.role,
-      workspaces: user.workspaces,
-      company: user.company,
       redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
     });
   } catch (error) {

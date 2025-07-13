@@ -86,17 +86,19 @@ export const registerUser = async (req, res, next) => {
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "User created successfully",
-      userId: newUser._id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-      avatar: {
-        url: newUser.avatar.url,
-        public_id: newUser.avatar.public_id,
+      userDetails: {
+        id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        avatar: {
+          url: newUser.avatar.url,
+          public_id: newUser.avatar.public_id,
+        },
+        role: newUser.role,
+        workspaces: newUser.workspaces,
+        company: newUser.company,
       },
-      role: newUser.role,
-      workspaces: newUser.workspaces,
-      company: newUser.company,
       redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
     });
   } catch (error) {

@@ -33,13 +33,15 @@ export const patchWorkspaceById = async (req, res, next) => {
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Workspace updated successfully",
-      updatedWorkspaceId: updatedWorkspace._id,
-      updatedWorkspaceName: updatedWorkspace.workspaceName,
-      updatedWorkspaceDescription: updatedWorkspace.workspaceDescription,
-      createdBy: updatedWorkspace.createdByUserId,
-      updatedBy: updatedWorkspace.updatedByUserId,
-      workspaceMembers: updatedWorkspace.workspaceMembers,
-      projects: updatedWorkspace.projects,
+      updatedWorkspace: {
+        id: updatedWorkspace._id,
+        name: updatedWorkspace.workspaceName,
+        description: updatedWorkspace.workspaceDescription,
+        createdBy: updatedWorkspace.createdByUserId,
+        updatedBy: updatedWorkspace.updatedByUserId,
+        workspaceMembers: updatedWorkspace.workspaceMembers,
+        projects: updatedWorkspace.projects,
+      },
     });
   } catch (error) {
     next(error);
