@@ -7,7 +7,7 @@ import Project from "../../models/Project.js";
 // Get all projects
 export const getAllProjectsController = async (req, res, next) => {
   try {
-    // Get worksspace
+    // Get workspace
     const { workspaceId } = req.body;
 
     // === Find All: Projects that belongs to that workspace
