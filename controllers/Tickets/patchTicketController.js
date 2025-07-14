@@ -71,7 +71,10 @@ export const patchTicketByIdController = async (req, res, next) => {
         assignedMembers: updateTicket.assignedMembers.map((member) => ({
           member,
         })),
-        tasks: updateTicket.tasks.map((task) => ({ task })),
+        tasks: updateTicket.tasks.map((task) => ({
+          title: task.title,
+          completed: task.completed,
+        })),
         comments: updateTicket.comments.map((comment) => comment),
       },
     });

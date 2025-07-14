@@ -75,7 +75,10 @@ export const createTicketController = async (req, res, next) => {
         createdBy: newTicket.createdByUserId,
         assignmedMembers: newTicket.assignedMembers,
         relatedProject: newTicket.relatedProject,
-        tasks: newTicket.tasks,
+        tasks: newTicket.tasks.map((task) => ({
+          title: task.title,
+          completed: task.completed,
+        })),
         comments: newTicket.comments,
       },
     });

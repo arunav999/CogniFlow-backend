@@ -75,7 +75,10 @@ export const getTicketByIdController = async (req, res, next) => {
         assignedMembers: findTicket.assignedMembers.map((member) => ({
           member,
         })),
-        tasks: findTicket.tasks.map((task) => ({ task })),
+        tasks: findTicket.tasks.map((task) => ({
+          title: task.title,
+          completed: task.completed,
+        })),
         comments: findTicket.comments.map((comment) => comment),
       },
     });

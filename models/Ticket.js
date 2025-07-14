@@ -29,7 +29,12 @@ const TicketSchema = new mongoose.Schema(
     updatedByUserId: { type: refType, ref: "User", default: null },
     assignedMembers: [{ type: refType, ref: "User" }],
     relatedProject: { type: refType, ref: "Project" },
-    tasks: [{ type: refType, ref: "Task" }],
+    tasks: [
+      {
+        title: { type: String },
+        completed: { type: Boolean, default: false },
+      },
+    ],
     comments: [{ type: refType, ref: "Comment" }],
   },
   { timestamps: true }
