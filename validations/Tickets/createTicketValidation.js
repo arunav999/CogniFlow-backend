@@ -6,11 +6,11 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
 
 export const createTicketValidator = (req, res, next) => {
-  const { ticketName, ticketDescription, ticketDeadline } = req.body;
+  const { ticketTitle, ticketDescription, ticketDeadline } = req.body;
 
   // ========== PRESENSE CHECK ==========
   // ticket name
-  if (!ticketName)
+  if (!ticketTitle)
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Ticket name is required", "");
 
   // ticket description
@@ -31,11 +31,11 @@ export const createTicketValidator = (req, res, next) => {
   // ========== CONTENT VALIDATION ==========
   const deadlineDate = new Date(ticketDeadline);
   const now = new Date();
-  let ticketNameSanitized = ticketName.trim();
+  let ticketTitleSanitized = ticketTitle.trim();
   let ticketDescriptionSanitized = ticketDescription.trim();
 
   // check length
-  if (ticketNameSanitized.length < 5)
+  if (ticketTitleSanitized.length < 5)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Ticket name must be atleast 5 characters",
@@ -77,7 +77,7 @@ export const createTicketValidator = (req, res, next) => {
     );
 
   //Overwrite req.body
-  req.body.ticketName = ticketNameSanitized;
+  req.body.ticketTitle = ticketTitleSanitized;
   req.body.ticketDescription = ticketDescriptionSanitized;
 
   // Next middleware

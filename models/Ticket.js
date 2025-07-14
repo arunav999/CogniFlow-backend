@@ -26,10 +26,11 @@ const TicketSchema = new mongoose.Schema(
     ticketDeadline: { type: Date, required: true },
     attachments: [
       {
-        url: { type: String },
+        url: { type: String, default: null },
       },
     ],
     createdByUserId: { type: refType, ref: "User" },
+    updatedByUserId: { type, refType, ref: "User", default: null },
     assignedMembers: [{ type: refType, ref: "User" }],
     relatedProject: { type: refType, ref: "Project" },
     tasks: [{ type: refType, ref: "Task" }],
