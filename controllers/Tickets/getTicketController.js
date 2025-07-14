@@ -45,4 +45,41 @@ export const getAllTicketsController = async (req, res, next) => {
 };
 
 /* === GET A SINGLE TICKET - THAT BELONGS TO A PROJECT WITH TICKET ID === */
-export const getTicketByIdController = async (req, res, next) => {};
+export const getTicketByIdController = async (req, res, next) => {
+  try {
+    const ticketId = req.params.id;
+
+    // Find ticket
+    const findTicket = await Ticket.findById(ticketId);
+
+    // If no ticket
+    if (!findTicket)
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .json({ success: false, message: "No ticket found" });
+
+    // response
+    res.status(STATUS_CODES.OK).json({
+      success: true,
+      ticket: {
+        id: ticketId,
+        projectRef: findTicket.relatedProject,
+        status: findTicket.ticketStatus,
+        type: findTicket.ticketType,
+        priority: findTicket.ticketPriority,
+        title: findTicket.ticketTitle,
+        description: findTicket.ticketDescription,
+        attachments: findTicket.attachments.map((image) => ({ url: image })),
+        createdBy: findTicket.createdByUserId,
+        updatedBy: findTicket.updatedByUserId,
+        assignedMembers: findTicket.assignedMembers.map((member) => ({
+          member,
+        })),
+        tasks: findTicket.tasks.map((task) => ({ task })),
+        comments: findTicket.comments.map((comment) => comment),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
