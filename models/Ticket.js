@@ -24,11 +24,7 @@ const TicketSchema = new mongoose.Schema(
     ticketTitle: { type: String, required: true },
     ticketDescription: { type: String, required: true },
     ticketDeadline: { type: Date, required: true },
-    attachments: [
-      {
-        url: { type: String, default: null },
-      },
-    ],
+    attachments: [{ type: String, default: null }],
     createdByUserId: { type: refType, ref: "User" },
     updatedByUserId: { type: refType, ref: "User", default: null },
     assignedMembers: [{ type: refType, ref: "User" }],

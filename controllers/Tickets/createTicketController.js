@@ -19,6 +19,7 @@ export const createTicketController = async (req, res, next) => {
     ticketTitle,
     ticketDescription,
     ticketDeadline,
+    attachments,
   } = req.body;
 
   try {
@@ -30,6 +31,7 @@ export const createTicketController = async (req, res, next) => {
       ticketTitle,
       ticketDescription,
       ticketDeadline,
+      attachments,
       createdByUserId: userId,
       relatedProject: projectId,
     });
@@ -69,7 +71,7 @@ export const createTicketController = async (req, res, next) => {
         title: newTicket.ticketTitle,
         description: newTicket.ticketDescription,
         deadline: newTicket.ticketDeadline,
-        attachments: newTicket.attachments,
+        attachments: newTicket.attachments.map((image) => ({ url: image })),
         createdBy: newTicket.createdByUserId,
         assignmedMembers: newTicket.assignedMembers,
         relatedProject: newTicket.relatedProject,
