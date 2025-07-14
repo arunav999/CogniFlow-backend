@@ -42,7 +42,7 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
-  if (ticketDescription.length < 15)
+  if (ticketDescriptionSanitized.length < 15)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
       "Ticket description must be atleast 15 characters",
@@ -63,6 +63,29 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
+  // For tasks
+  if (!Array.isArray(req.body.tasks))
+    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Tasks must be an array", "");
+
+  const validateTasks = (req.body.tasks || []).map((task) => {
+    const taskSanitized = task.title.trim();
+
+    if (
+      typeof task.title !== "string" ||
+      (taskSanitized.length > 0 && taskSanitized.length < 5)
+    )
+      throw new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Each task title must be a string with at least 5 characters",
+        ""
+      );
+
+    return {
+      title: taskSanitized,
+      completed: !!task.completed,
+    };
+  });
+
   // Check role
   const user = req.user;
   if (
@@ -79,6 +102,7 @@ export const createTicketValidator = (req, res, next) => {
   //Overwrite req.body
   req.body.ticketTitle = ticketTitleSanitized;
   req.body.ticketDescription = ticketDescriptionSanitized;
+  req.body.tasks = validateTasks;
 
   // Next middleware
   next();

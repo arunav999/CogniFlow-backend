@@ -35,7 +35,10 @@ export const getAllTicketsController = async (req, res, next) => {
         createdBy: ticket.createdByUserId,
         updatedBy: ticket.updatedByUserId,
         assignedMembers: ticket.assignedMembers.map((member) => ({ member })),
-        tasks: ticket.tasks.map((task) => ({ task })),
+        tasks: ticket.tasks.map((task) => ({
+          title: task.title,
+          completed: task.completed,
+        })),
         comments: ticket.comments.map((comment) => comment),
       })),
     });

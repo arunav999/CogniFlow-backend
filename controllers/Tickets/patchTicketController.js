@@ -16,6 +16,7 @@ export const patchTicketByIdController = async (req, res, next) => {
     ticketDescription,
     ticketDeadline,
     attachments,
+    tasks,
   } = req.body;
   const ticketId = req.params.id;
 
@@ -48,6 +49,7 @@ export const patchTicketByIdController = async (req, res, next) => {
           ticketDeadline,
           attachments,
           updatedByUserId: userId,
+          tasks: tasks || [],
         },
       },
       { new: true }

@@ -20,6 +20,7 @@ export const createTicketController = async (req, res, next) => {
     ticketDescription,
     ticketDeadline,
     attachments,
+    tasks,
   } = req.body;
 
   try {
@@ -34,6 +35,7 @@ export const createTicketController = async (req, res, next) => {
       attachments,
       createdByUserId: userId,
       relatedProject: projectId,
+      tasks: tasks || [],
     });
 
     // Update ticket
