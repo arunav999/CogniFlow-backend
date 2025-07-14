@@ -11,9 +11,9 @@ import { createTicketController } from "../controllers/Tickets/createTicketContr
 import {
   getAllTicketsController,
   getTicketByIdController,
-} from "../controllers/Tickets/getTicketController";
-import { patchTicketByIdController } from "../controllers/Tickets/patchTicketController";
-import { deleteTicketByIdController } from "../controllers/Tickets/deleteTicketController";
+} from "../controllers/Tickets/getTicketController.js";
+import { patchTicketByIdController } from "../controllers/Tickets/patchTicketController.js";
+import { deleteTicketByIdController } from "../controllers/Tickets/deleteTicketController.js";
 
 const router = Router();
 
