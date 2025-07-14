@@ -22,13 +22,6 @@ export const createTicketController = async (req, res, next) => {
   } = req.body;
 
   try {
-    // find project
-    const findProject = await Project.findById(projectId);
-
-    // if noproject
-    if (!findProject)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", "");
-
     // Create new ticket
     const newTicket = await Ticket.create({
       ticketStatus,
@@ -41,8 +34,14 @@ export const createTicketController = async (req, res, next) => {
       relatedProject: projectId,
     });
 
-    // Update workspace
+    // Update ticket
     const newTicketId = newTicket._id;
+
+    // find project
+    const findProject = await Project.findById(projectId);
+    // if no project
+    if (!findProject)
+      throw new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", "");
 
     // check if ticket already a part of worksapce
     if (findProject.tickets.includes(newTicketId))
@@ -53,7 +52,10 @@ export const createTicketController = async (req, res, next) => {
       );
 
     // if not a part
-    await Project.updateOne({ _id: projectId }, { $addToSet: newTicketId });
+    await Project.updateOne(
+      { _id: projectId },
+      { $addToSet: { tickets: newTicketId } }
+    );
 
     // Send response
     res.status(STATUS_CODES.CREATED).json({

@@ -15,12 +15,6 @@ export const createProjectController = async (req, res, next) => {
     req.body;
 
   try {
-    // find workspace
-    const workspace = await Workspace.findById(workspaceId);
-    // if no workspace
-    if (!workspace)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
-
     // Creating project
     const newProject = await Project.create({
       projectName,
@@ -32,6 +26,12 @@ export const createProjectController = async (req, res, next) => {
 
     // Update Workspace
     const newProjectId = newProject._id;
+
+    // find workspace
+    const workspace = await Workspace.findById(workspaceId);
+    // if no workspace
+    if (!workspace)
+      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
 
     // check if project already a part of the workspace
     if (workspace.projects.includes(newProjectId))

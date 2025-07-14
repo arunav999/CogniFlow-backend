@@ -30,7 +30,7 @@ const TicketSchema = new mongoose.Schema(
       },
     ],
     createdByUserId: { type: refType, ref: "User" },
-    updatedByUserId: { type, refType, ref: "User", default: null },
+    updatedByUserId: { type: refType, ref: "User", default: null },
     assignedMembers: [{ type: refType, ref: "User" }],
     relatedProject: { type: refType, ref: "Project" },
     tasks: [{ type: refType, ref: "Task" }],
