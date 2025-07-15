@@ -67,7 +67,6 @@ export const patchTicketByIdController = async (req, res, next) => {
         priority: updateTicket.ticketPriority,
         title: updateTicket.ticketTitle,
         description: updateTicket.ticketDescription,
-        attachments: updateTicket.attachments.map((image) => ({ url: image })),
         createdBy: updateTicket.createdByUserId,
         updatedBy: updateTicket.updatedByUserId,
         assignedMembers: updateTicket.assignedMembers.map((member) => ({
@@ -76,6 +75,10 @@ export const patchTicketByIdController = async (req, res, next) => {
         tasks: updateTicket.tasks.map((task) => ({
           title: task.title,
           completed: task.completed,
+        })),
+        attachments: updateTicket.attachments.map((item) => ({
+          url: item.url,
+          type: item.type,
         })),
       },
     });

@@ -73,13 +73,16 @@ export const createTicketController = async (req, res, next) => {
         title: newTicket.ticketTitle,
         description: newTicket.ticketDescription,
         deadline: newTicket.ticketDeadline,
-        attachments: newTicket.attachments.map((image) => ({ url: image })),
         createdBy: newTicket.createdByUserId,
         assignmedMembers: newTicket.assignedMembers,
         relatedProject: newTicket.relatedProject,
         tasks: newTicket.tasks.map((task) => ({
           title: task.title,
           completed: task.completed,
+        })),
+        attachments: newTicket.attachments.map((item) => ({
+          url: item.url,
+          type: item.type,
         })),
       },
     });
