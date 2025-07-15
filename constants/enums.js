@@ -24,3 +24,9 @@ export const PRIORITY = {
   MEDIUM: "medium",
   HIGH: "high",
 };
+
+// FILE
+export const FILE_TYPE = {
+  FILE: "file",
+  LINK: "link",
+};

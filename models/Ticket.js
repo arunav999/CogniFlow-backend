@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
-import { STATUS, TICKET_TYPE, PRIORITY } from "../constants/enums.js";
+import {
+  STATUS,
+  TICKET_TYPE,
+  PRIORITY,
+  FILE_TYPE,
+} from "../constants/enums.js";
 
 const refType = mongoose.Schema.Types.ObjectId;
 
@@ -24,7 +29,6 @@ const TicketSchema = new mongoose.Schema(
     ticketTitle: { type: String, required: true },
     ticketDescription: { type: String, required: true },
     ticketDeadline: { type: Date, required: true },
-    attachments: [{ type: String, default: null }],
     createdByUserId: { type: refType, ref: "User" },
     updatedByUserId: { type: refType, ref: "User", default: null },
     assignedMembers: [{ type: refType, ref: "User" }],
@@ -35,6 +39,14 @@ const TicketSchema = new mongoose.Schema(
         completed: { type: Boolean, default: false },
       },
     ],
+    attachments: [
+      {
+        url: { type: String, default: null },
+        type: { type: String, enum: Object.values(FILE_TYPE), default: null },
+      },
+    ],
+    uploadedAt: { type: Date, default: Date.now },
+    uploadedBy: { type: refType, ref: "User" },
   },
   { timestamps: true }
 );
