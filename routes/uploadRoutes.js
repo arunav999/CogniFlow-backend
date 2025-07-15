@@ -16,7 +16,10 @@ import { verifyToken } from "../middlewares/verifyToken.js";
 const router = Router();
 
 // Multer
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB
+});
 
 // Cloudinary config
 cloudinary.config({
@@ -70,5 +73,19 @@ router.patch(
     }
   }
 );
+
+// Handler multer file size error
+router.use((err, req, res, next) => {
+  if (err.code === "LIMIT_FILE_SIZE")
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "File size should not exceed 2MB",
+        "avatar"
+      )
+    );
+
+  next(err);
+});
 
 export default router;
