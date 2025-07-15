@@ -80,6 +80,8 @@ export const patchTicketByIdController = async (req, res, next) => {
           url: item.url,
           type: item.type,
         })),
+        uploadedAt: updateTicket.updatedAt,
+        uploadedBy: updateTicket.uploadedBy,
       },
     });
   } catch (error) {

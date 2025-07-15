@@ -84,6 +84,8 @@ export const createTicketController = async (req, res, next) => {
           url: item.url,
           type: item.type,
         })),
+        uploadedAt: newTicket.uploadedAt,
+        uploadedBy: newTicket.uploadedBy,
       },
     });
   } catch (error) {
