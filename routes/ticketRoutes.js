@@ -15,6 +15,10 @@ import {
 import { patchTicketByIdController } from "../controllers/Tickets/patchTicketController.js";
 import { deleteTicketByIdController } from "../controllers/Tickets/deleteTicketController.js";
 
+// Attachments controller
+import { patchAttachmentController } from "../controllers/Tickets/patchAttachmentController.js";
+import { deleteAttachmentController } from "../controllers/Tickets/deleteAttachmentController.js";
+
 const router = Router();
 
 // ========== ROUTES ==========
@@ -32,5 +36,12 @@ router.patch("/:id", protect, createTicketValidator, patchTicketByIdController);
 
 // Delete ticket
 router.delete("/:id", protect, deleteTicketByIdController);
+
+// ========== ROUTES FOR ATTACHMENTS ==========
+// Add attachments
+router.patch("/:id/attachments", protect, patchAttachmentController);
+
+// Delete attachments
+router.delete("/:id/:attachmentsId", protect, deleteAttachmentController);
 
 export default router;
