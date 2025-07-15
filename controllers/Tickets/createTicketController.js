@@ -81,7 +81,6 @@ export const createTicketController = async (req, res, next) => {
           title: task.title,
           completed: task.completed,
         })),
-        comments: newTicket.comments,
       },
     });
   } catch (error) {

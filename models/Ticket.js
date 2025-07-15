@@ -35,7 +35,6 @@ const TicketSchema = new mongoose.Schema(
         completed: { type: Boolean, default: false },
       },
     ],
-    comments: [{ type: refType, ref: "Comment" }],
   },
   { timestamps: true }
 );

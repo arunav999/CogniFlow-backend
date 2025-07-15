@@ -77,7 +77,6 @@ export const patchTicketByIdController = async (req, res, next) => {
           title: task.title,
           completed: task.completed,
         })),
-        comments: updateTicket.comments.map((comment) => comment),
       },
     });
   } catch (error) {

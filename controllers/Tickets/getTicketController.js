@@ -39,7 +39,6 @@ export const getAllTicketsController = async (req, res, next) => {
           title: task.title,
           completed: task.completed,
         })),
-        comments: ticket.comments.map((comment) => comment),
       })),
     });
   } catch (error) {
@@ -82,7 +81,6 @@ export const getTicketByIdController = async (req, res, next) => {
           title: task.title,
           completed: task.completed,
         })),
-        comments: findTicket.comments.map((comment) => comment),
       },
     });
   } catch (error) {
