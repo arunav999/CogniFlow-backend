@@ -42,7 +42,11 @@ const TicketSchema = new mongoose.Schema(
     attachments: [
       {
         url: { type: String, default: null },
-        type: { type: String, enum: Object.values(FILE_TYPE), default: null },
+        type: {
+          type: String,
+          enum: Object.values(FILE_TYPE),
+          default: FILE_TYPE.NULL,
+        },
       },
     ],
     uploadedAt: { type: Date, default: Date.now },

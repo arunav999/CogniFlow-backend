@@ -29,4 +29,5 @@ export const PRIORITY = {
 export const FILE_TYPE = {
   FILE: "file",
   LINK: "link",
+  NULL: null,
 };

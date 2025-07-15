@@ -6,6 +6,9 @@ import protect from "../middlewares/authMiddleware.js";
 // Validations
 import { createTicketValidator } from "../validations/Tickets/createTicketValidation.js";
 
+// Upload config
+import { upload } from "./uploadRoutes.js";
+
 // Controllers
 import { createTicketController } from "../controllers/Tickets/createTicketController.js";
 import {
@@ -39,7 +42,12 @@ router.delete("/:id", protect, deleteTicketByIdController);
 
 // ========== ROUTES FOR ATTACHMENTS ==========
 // Add attachments
-router.patch("/:id/attachments", protect, patchAttachmentController);
+router.patch(
+  "/:id/attachments",
+  protect,
+  upload.array("attachments", 5),
+  patchAttachmentController
+);
 
 // Delete attachments
 router.delete("/:id/:attachmentsId", protect, deleteAttachmentController);
