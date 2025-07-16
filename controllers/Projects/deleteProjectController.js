@@ -1,6 +1,9 @@
 // ==================== Delete Project Controller ====================
 // Handles deletion of a project and updates the workspace
 
+// Clouidinary
+import { v2 as cloudinary } from "cloudinary";
+
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
@@ -11,9 +14,10 @@ import ApiError from "../../errors/Apierror.js";
 import { ROLES } from "../../constants/roles.js";
 import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
-// Models for workspace and project
+// Models for workspace, project and Ticket
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
+import Ticket from "../../models/Ticket.js";
 
 // Main deleteProjectById controller
 export const deleteProjectByIdController = async (req, res, next) => {
@@ -43,6 +47,31 @@ export const deleteProjectByIdController = async (req, res, next) => {
         )
       );
     }
+
+    // === Cascade delete: Remove all attachments from tickets ===
+    const allTickets = await Ticket.find({ relatedProject: projectId });
+
+    for (const ticket of allTickets) {
+      for (const attachment of ticket.attachments) {
+        if (attachment.type === "file" && attachment.public_id) {
+          try {
+            await cloudinary.uploader.destroy(attachment.public_id);
+          } catch (error) {
+            next(
+              new ApiError(
+                STATUS_CODES.SERVER_ERROR,
+                "Failed to delete attachment",
+                error.message
+              )
+            );
+            return;
+          }
+        }
+      }
+    }
+
+    // === Cascade delete: Remove all related tickets ===
+    await Ticket.deleteMany({ relatedProject: projectId });
 
     // Remove project reference from workspace
     await Workspace.updateMany(
