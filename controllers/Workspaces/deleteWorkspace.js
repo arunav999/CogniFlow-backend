@@ -1,6 +1,12 @@
 // Constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Roles Constants
+import { ROLES } from "../../constants/roles.js";
+
+// Error handling utility
+import ApiError from "../../errors/Apierror.js";
+
 // Models
 import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
@@ -21,12 +27,17 @@ export const deleteWorkspaceById = async (req, res, next) => {
         .json({ success: false, message: "No workspace found" });
 
     // === Authorization: Only allow creator to delete ===
-    if (!findWorkspace.createdByUserId.equals(userId))
-      return res.status(STATUS_CODES.FORBIDDEN).json({
-        success: false,
-        message: "You are not authorized to delete this workspace",
-      });
-
+    if (
+      !findWorkspace.createdByUserId.equals(userId) &&
+      req.user.role !== ROLES.ADMIN
+    )
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "You are not authorized to delete this workspace",
+          ""
+        )
+      );
     // === Cascade delete: Remove all related tickets ===
     await Ticket.deleteMany({ workspaceRef: workspaceId });
 
