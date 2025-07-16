@@ -4,9 +4,13 @@
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Roles Constants
+import { ROLES } from "../../constants/roles.js";
+
 // Models for user and workspace
 import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
+import ApiError from "../../errors/Apierror.js";
 
 // Main createWorkspaceController
 export const createWorkspaceController = async (req, res, next) => {
@@ -15,6 +19,18 @@ export const createWorkspaceController = async (req, res, next) => {
   const { workspaceName, workspaceDescription } = req.body;
 
   try {
+    // Check role of the user
+    const findUser = await User.findById(userId);
+    const userRole = findUser.role;
+    if (userRole !== ROLES.ADMIN)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "Only admins can create workspaces",
+          ""
+        )
+      );
+
     // Create new workspace document
     const newWorkspace = await Workspace.create({
       workspaceName,

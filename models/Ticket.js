@@ -65,6 +65,7 @@ const TicketSchema = new mongoose.Schema(
           enum: Object.values(FILE_TYPE),
           default: FILE_TYPE.NULL,
         },
+        public_id: { type: String, default: null },
       },
     ],
   },
