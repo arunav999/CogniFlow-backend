@@ -18,5 +18,6 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
 export const deleteAttachmentController = async (req, res, next) => {
-  
+  // Extract ticket ID from request
+  const ticketId = req.params.id;
 };

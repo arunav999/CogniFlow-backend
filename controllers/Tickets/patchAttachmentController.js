@@ -64,6 +64,7 @@ export const patchAttachmentController = async (req, res, next) => {
       const attachmentsToAdd = uploadedResults.map((file) => ({
         url: file.secure_url,
         type: "file",
+        public_id: file.public_id,
       }));
 
       await Ticket.updateOne(
