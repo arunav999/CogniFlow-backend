@@ -4,6 +4,9 @@
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Error handling utility
+import ApiError from "../../errors/Apierror.js";
+
 // Workspace model
 import Workspace from "../../models/Workspace.js";
 
@@ -20,14 +23,14 @@ export const getAllWorkspaces = async (req, res, next) => {
 
     // If no workspaces found, respond with error
     if (getAllWorkspacesAdmin.length === 0) {
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ succes: false, message: "No workspace created yet." });
+      return next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "No workspace created yet.", "")
+      );
     }
 
     // Respond with list of workspaces
     res.status(STATUS_CODES.OK).json({
-      succes: true,
+      success: true,
       workspaces: getAllWorkspacesAdmin.map((workspace) => ({
         id: workspace._id,
         name: workspace.workspaceName,
@@ -54,10 +57,9 @@ export const getWorkspaceById = async (req, res, next) => {
 
     // If workspace not found, respond with error
     if (!findWorkspace)
-      return res.status(STATUS_CODES.NOT_FOUND).json({
-        succes: false,
-        message: "Workspace not found",
-      });
+      return next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "")
+      );
 
     // Respond with workspace details
     res.status(STATUS_CODES.OK).json({
