@@ -5,6 +5,7 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
+import Ticket from "../../models/Ticket.js";
 
 export const deleteWorkspaceById = async (req, res, next) => {
   const userId = req.user._id;

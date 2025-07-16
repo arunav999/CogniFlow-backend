@@ -14,7 +14,6 @@ import Ticket from "../../models/Ticket.js";
 // Main deleteTicketByIdController function
 export const deleteTicketByIdController = async (req, res, next) => {
   // Extract user and ticket IDs from request
-  const userId = req.user._id;
   const ticketId = req.params.id;
 
   try {
