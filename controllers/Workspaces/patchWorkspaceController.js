@@ -4,7 +4,14 @@
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Error handling utility
+import ApiError from "../../errors/Apierror.js";
+
+// Roles Constants
+import { ROLES } from "../../constants/roles.js";
+
 // Workspace model
+import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
 
 // Main patchWorkspaceById controller
@@ -14,6 +21,18 @@ export const patchWorkspaceById = async (req, res, next) => {
   const workspaceId = req.params.id;
 
   try {
+    // Check role of the user
+    const findUser = await User.findById(userId);
+    const userRole = findUser.role;
+    if (userRole !== ROLES.ADMIN)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "Only admins can update workspaces",
+          ""
+        )
+      );
+
     // Find workspace by ID
     const findWorkspace = await Workspace.findById(workspaceId);
     if (!findWorkspace)
