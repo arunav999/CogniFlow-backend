@@ -65,10 +65,6 @@ const TicketSchema = new mongoose.Schema(
         },
       },
     ],
-    // Timestamp for when attachments were uploaded
-    uploadedAt: { type: Date, default: Date.now },
-    // User who uploaded the attachments
-    uploadedBy: { type: refType, ref: "User" },
   },
   { timestamps: true }
 );
