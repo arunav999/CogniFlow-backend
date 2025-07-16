@@ -6,7 +6,7 @@ import { Router } from "express";
 // Protect routes with authentication middleware
 import protect from "../middlewares/authMiddleware.js";
 // Rate limiter middleware to prevent abuse
-import rateLimiterMiddleware from "../middlewares/rateLimiter.js";
+import rateLimitMiddleware from "../middlewares/rateLimiter.js";
 
 // ==================== Validators ====================
 // Validate registration and login requests
@@ -29,7 +29,7 @@ const router = Router();
 router.post("/register", validateRegisterUser, registerUser);
 
 // Login an existing user
-router.post("/login", rateLimiterMiddleware, validateLoginUser, loginUser);
+router.post("/login", rateLimitMiddleware, validateLoginUser, loginUser);
 
 // Check if a user email exists
 router.get("/check-email", checkUserExist);
