@@ -8,10 +8,9 @@ import { STATUS_CODES } from "../../constants/statusCodes.js";
 import ApiError from "../../errors/Apierror.js";
 
 // Roles Constants
-import { ROLES } from "../../constants/roles.js";
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
 // Workspace model
-import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
 
 // Main patchWorkspaceById controller
@@ -22,9 +21,8 @@ export const patchWorkspaceById = async (req, res, next) => {
 
   try {
     // Check role of the user
-    const findUser = await User.findById(userId);
-    const userRole = findUser.role;
-    if (userRole !== ROLES.ADMIN)
+    const userRole = req.user.role;
+    if (!ROLE_PERMISSIONS[userRole]?.canManageWorkspaces)
       return next(
         new ApiError(
           STATUS_CODES.FORBIDDEN,

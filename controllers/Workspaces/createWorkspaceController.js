@@ -4,13 +4,15 @@
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Error handling utility
+import ApiError from "../../errors/Apierror.js";
+
 // Roles Constants
-import { ROLES } from "../../constants/roles.js";
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
 // Models for user and workspace
 import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
-import ApiError from "../../errors/Apierror.js";
 
 // Main createWorkspaceController
 export const createWorkspaceController = async (req, res, next) => {
@@ -20,9 +22,8 @@ export const createWorkspaceController = async (req, res, next) => {
 
   try {
     // Check role of the user
-    const findUser = await User.findById(userId);
-    const userRole = findUser.role;
-    if (userRole !== ROLES.ADMIN)
+    const userRole = req.user.role;
+    if (!ROLE_PERMISSIONS[userRole]?.canManageWorkspaces)
       return next(
         new ApiError(
           STATUS_CODES.FORBIDDEN,

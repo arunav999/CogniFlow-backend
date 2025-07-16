@@ -1,8 +1,14 @@
 // ==================== Patch Project Controller ====================
 // Handles updating a project's details and returns the updated project
 
+// Error handling utility
+import ApiError from "../../errors/Apierror.js";
+
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
+
+// Roles Constants
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
 // Models for workspace and project
 import Workspace from "../../models/Workspace.js";
@@ -22,21 +28,30 @@ export const patchProjectByIdController = async (req, res, next) => {
   const projectId = req.params.id;
 
   try {
+    // Authorization check for user role
+    const userRole = req.user.role;
+    if (!ROLE_PERMISSIONS[userRole]?.canManageProjects)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "You are not authorized to update projects",
+          ""
+        )
+      );
+
     // Find workspace and project by ID
     const findWorkspace = await Workspace.findById(workspaceId);
     const findProject = await Project.findById(projectId);
 
     // If workspace not found, respond with error
     if (!findWorkspace)
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ success: false, message: "No workspace found" });
+      return next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "No workspace found", "")
+      );
 
     // If project not found, respond with error
     if (!findProject)
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ success: false, message: "No project found" });
+      return next(new ApiError(STATUS_CODES.NOT_FOUND, "No project found", ""));
 
     // Update project details
     const updatedProject = await Project.findByIdAndUpdate(

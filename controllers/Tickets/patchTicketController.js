@@ -4,6 +4,12 @@
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Error handling utility
+import ApiError from "../../errors/Apierror.js";
+
+// Roles Constants
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
+
 // Models
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
@@ -28,12 +34,24 @@ export const patchTicketByIdController = async (req, res, next) => {
   const ticketId = req.params.id;
 
   try {
+    // Check user role permissions
+    const userRole = req.user.role;
+
+    if (!ROLE_PERMISSIONS[userRole]?.canManageTickets)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "You are not authorized to update tickets",
+          ""
+        )
+      );
+
     // Validate workspace and project existence
     const findWorkspace = await Workspace.findById(workspaceId);
     if (!findWorkspace)
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ success: false, message: "No workspace found" });
+      return next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "")
+      );
 
     // Find project and ticket by their IDs
     const findProject = await Project.findById(projectId);
@@ -41,15 +59,13 @@ export const patchTicketByIdController = async (req, res, next) => {
 
     // If project not found, respond with error
     if (!findProject)
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ success: false, message: "No project found" });
+      return next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", "")
+      );
 
     // If ticket not found, respond with error
     if (!findTicket)
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .json({ success: false, message: "No ticket found" });
+      return next(new ApiError(STATUS_CODES.NOT_FOUND, "Ticket not found", ""));
 
     // Update ticket details
     const updateTicket = await Ticket.findByIdAndUpdate(

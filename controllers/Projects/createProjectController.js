@@ -7,6 +7,9 @@ import ApiError from "../../errors/Apierror.js";
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Roles Constants
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
+
 // Models for workspace and project
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
@@ -19,10 +22,23 @@ export const createProjectController = async (req, res, next) => {
     req.body;
 
   try {
+    // Check role of the user
+    const userRole = req.user.role;
+    if (!ROLE_PERMISSIONS[userRole]?.canManageProjects)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "Only managers or admins can create projects",
+          ""
+        )
+      );
+
     // Find workspace by ID
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
+      throw next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "")
+      );
 
     // Check if a project with the same name exists in this workspace
     const existingProject = await Project.findOne({
@@ -30,10 +46,12 @@ export const createProjectController = async (req, res, next) => {
       workspaceRef: workspaceId,
     });
     if (existingProject)
-      throw new ApiError(
-        STATUS_CODES.CONFLICT,
-        "This project already exists in the workspace",
-        ""
+      throw next(
+        new ApiError(
+          STATUS_CODES.CONFLICT,
+          "This project already exists in the workspace",
+          ""
+        )
       );
 
     // Create new project document

@@ -7,6 +7,9 @@ import ApiError from "../../errors/Apierror.js";
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Roles Constants
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
+
 // Models
 import Project from "../../models/Project.js";
 import Ticket from "../../models/Ticket.js";
@@ -17,6 +20,17 @@ export const deleteTicketByIdController = async (req, res, next) => {
   const ticketId = req.params.id;
 
   try {
+    // Check user role permissions
+    const userRole = req.user.role;
+    if (!ROLE_PERMISSIONS[userRole]?.canManageTickets)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "You are not authorized to delete tickets",
+          ""
+        )
+      );
+
     // Validate ticket existence
     const findTicket = await Ticket.findById(ticketId);
     if (!findTicket)

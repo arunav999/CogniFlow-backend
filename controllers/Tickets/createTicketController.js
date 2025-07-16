@@ -7,6 +7,9 @@ import ApiError from "../../errors/Apierror.js";
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Roles Constants
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
+
 // Models
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
@@ -32,15 +35,28 @@ export const createTicketController = async (req, res, next) => {
   } = req.body;
 
   try {
+    // Check user role permissions
+    const userRole = req.user.role;
+    if (!ROLE_PERMISSIONS[userRole]?.canManageTickets)
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "You are not authorized to create tickets",
+          ""
+        )
+      );
+
     // Find the workspace by ID
     const findWorkspace = await Workspace.findById(workspaceId);
     if (!findWorkspace)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
+      throw next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "")
+      );
 
     // Find the project to associate with the ticket
     const findProject = await Project.findById(projectId);
     if (!findProject)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", "");
+      throw next(new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", ""));
 
     // Check if ticket already exists in the project
     const existingTicket = await Ticket.findOne({
@@ -48,10 +64,12 @@ export const createTicketController = async (req, res, next) => {
       relatedProject: projectId,
     });
     if (existingTicket)
-      throw new ApiError(
-        STATUS_CODES.CONFLICT,
-        "This ticket already exists in this project",
-        ""
+      throw next(
+        new ApiError(
+          STATUS_CODES.CONFLICT,
+          "This ticket already exists in this project",
+          ""
+        )
       );
 
     // Create new ticket document

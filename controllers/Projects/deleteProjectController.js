@@ -9,9 +9,9 @@ import ApiError from "../../errors/Apierror.js";
 
 // Roles Constants
 import { ROLES } from "../../constants/roles.js";
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
 // Models for workspace and project
-import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
 
@@ -23,21 +23,24 @@ export const deleteProjectByIdController = async (req, res, next) => {
 
   try {
     // Find project by ID
-    const findUser = await User.findById(userId);
+    const userRole = req.user.role;
     const findProject = await Project.findById(projectId);
     if (!findProject)
-      return new ApiError(STATUS_CODES.NOT_FOUND, "No project found", "");
+      return next(new ApiError(STATUS_CODES.NOT_FOUND, "No project found", ""));
 
     // Only allow the manager who created the project or an admin to delete
     const isCreatorManager =
       findProject.createdByUserId.equals(userId) &&
-      findUser.role === ROLES.MANAGER;
-    const isAdmin = findUser.role === ROLES.ADMIN;
+      ROLE_PERMISSIONS[userRole]?.canManageProjects;
+
+    const isAdmin = userRole === ROLES.ADMIN;
     if (!isCreatorManager && !isAdmin) {
-      return new ApiError(
-        STATUS_CODES.FORBIDDEN,
-        "You are not authorized to delete this project",
-        ""
+      return next(
+        new ApiError(
+          STATUS_CODES.FORBIDDEN,
+          "You are not authorized to delete this project",
+          ""
+        )
       );
     }
 
