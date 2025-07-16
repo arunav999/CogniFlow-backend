@@ -19,6 +19,23 @@ export const createProjectController = async (req, res, next) => {
     req.body;
 
   try {
+    // Find workspace by ID
+    const workspace = await Workspace.findById(workspaceId);
+    if (!workspace)
+      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
+
+    // Check if a project with the same name exists in this workspace
+    const existingProject = await Project.findOne({
+      projectName,
+      workspaceRef: workspaceId,
+    });
+    if (existingProject)
+      throw new ApiError(
+        STATUS_CODES.CONFLICT,
+        "This project already exists in the workspace",
+        ""
+      );
+
     // Create new project document
     const newProject = await Project.create({
       projectName,
@@ -31,18 +48,13 @@ export const createProjectController = async (req, res, next) => {
     // Get new project's ID
     const newProjectId = newProject._id;
 
-    // Find workspace by ID
-    const workspace = await Workspace.findById(workspaceId);
-    if (!workspace)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
-
-    // Check if project already exists in workspace
-    if (workspace.projects.includes(newProjectId))
-      throw new ApiError(
-        STATUS_CODES.CONFLICT,
-        "This project already exists in the workspace",
-        ""
-      );
+    // // Check if project already exists in workspace
+    // if (workspace.projects.includes(newProjectId))
+    //   throw new ApiError(
+    //     STATUS_CODES.CONFLICT,
+    //     "This project already exists in this workspace",
+    //     ""
+    //   );
 
     // Add project to workspace's projects array
     await Workspace.updateOne(
