@@ -1,3 +1,6 @@
+// Clouidinary
+import { v2 as cloudinary } from "cloudinary";
+
 // Constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
@@ -35,6 +38,28 @@ export const deleteWorkspaceById = async (req, res, next) => {
       return res
         .status(STATUS_CODES.NOT_FOUND)
         .json({ success: false, message: "No workspace found" });
+
+    // === Cascade delete: Remove all attachments from tickets ===
+    const allTickets = await Ticket.find({ workspaceRef: workspaceId });
+
+    for (const ticket of allTickets) {
+      for (const attachment of ticket.attachments) {
+        if (attachment.type === "file" && attachment.public_id) {
+          try {
+            await cloudinary.uploader.destroy(attachment.public_id);
+          } catch (error) {
+            next(
+              new ApiError(
+                STATUS_CODES.SERVER_ERROR,
+                "Failed to delete attachment",
+                error.message
+              )
+            );
+            return;
+          }
+        }
+      }
+    }
 
     // === Cascade delete: Remove all related tickets ===
     await Ticket.deleteMany({ workspaceRef: workspaceId });
