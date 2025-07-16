@@ -36,7 +36,7 @@ export const createProjectController = async (req, res, next) => {
     // Find workspace by ID
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace)
-      throw next(
+      return next(
         new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "")
       );
 
@@ -46,7 +46,7 @@ export const createProjectController = async (req, res, next) => {
       workspaceRef: workspaceId,
     });
     if (existingProject)
-      throw next(
+      return next(
         new ApiError(
           STATUS_CODES.CONFLICT,
           "This project already exists in the workspace",

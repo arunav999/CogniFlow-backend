@@ -49,14 +49,14 @@ export const createTicketController = async (req, res, next) => {
     // Find the workspace by ID
     const findWorkspace = await Workspace.findById(workspaceId);
     if (!findWorkspace)
-      throw next(
+      return next(
         new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "")
       );
 
     // Find the project to associate with the ticket
     const findProject = await Project.findById(projectId);
     if (!findProject)
-      throw next(new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", ""));
+      return next(new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", ""));
 
     // Check if ticket already exists in the project
     const existingTicket = await Ticket.findOne({
@@ -64,7 +64,7 @@ export const createTicketController = async (req, res, next) => {
       relatedProject: projectId,
     });
     if (existingTicket)
-      throw next(
+      return next(
         new ApiError(
           STATUS_CODES.CONFLICT,
           "This ticket already exists in this project",
@@ -111,7 +111,7 @@ export const createTicketController = async (req, res, next) => {
         description: newTicket.ticketDescription,
         deadline: newTicket.ticketDeadline,
         createdBy: newTicket.createdByUserId,
-        assignmedMembers: newTicket.assignedMembers,
+        assignedMembers: newTicket.assignedMembers,
         tasks: newTicket.tasks.map((task) => ({
           title: task.title,
           completed: task.completed,

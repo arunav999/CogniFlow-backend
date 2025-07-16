@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
 
   const errorResponse = {
     success: false,
-    message: err.message || "Somenting went wrong",
+    message: err.message || "Something went wrong",
   };
 
   if (err.field) {
