@@ -15,14 +15,14 @@ const loginUserValidator = async (req, res, next) => {
 
   // Presence check: email
   if (!email)
-    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email");
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email")
+    );
 
   // Presence check: password
   if (!password)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Password is required",
-      "password"
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Password is required", "password")
     );
 
   // Content validation: sanitize and check length/format
@@ -31,18 +31,18 @@ const loginUserValidator = async (req, res, next) => {
 
   // Email length check
   if (emailSanitized.length < 5)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Email must be 5 characters",
-      "email"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Email must be 5 characters",
+        "email"
+      )
     );
 
   // Email format check
   if (!REGX.EMAIL.test(emailSanitized))
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Invalid email format",
-      "email"
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Invalid email format", "email")
     );
 
   // Overwrite req.body with sanitized values

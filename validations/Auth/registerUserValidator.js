@@ -25,42 +25,50 @@ const registerUserValidator = (req, res, next) => {
 
   // Presence check: first name
   if (!firstName)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "First name is required",
-      "firstName"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "First name is required",
+        "firstName"
+      )
     );
 
   // Presence check: email
   if (!email)
-    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email");
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email")
+    );
 
   // Presence check: password
   if (!password)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Password is required",
-      "password"
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Password is required", "password")
     );
 
   // Presence check: confirm password
   if (!confirmPassword)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Confirm password is required",
-      "confirmPassword"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Confirm password is required",
+        "confirmPassword"
+      )
     );
 
   // Presence check: role
   if (!role)
-    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Role is required", "role");
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Role is required", "role")
+    );
 
   // Password match check
   if (password.trim() !== confirmPassword.trim())
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Passwords do not match",
-      "confirmPassword"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Passwords do not match",
+        "confirmPassword"
+      )
     );
 
   // ===== CONTENT VALIDATION =====
@@ -72,75 +80,91 @@ const registerUserValidator = (req, res, next) => {
 
   // check length
   if (firstNameSanitized.length < 3)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "First name must be atleast 3 characters",
-      "firstName"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "First name must be atleast 3 characters",
+        "firstName"
+      )
     );
 
   if (lastNameSanitized.length > 0 && lastNameSanitized.length < 3)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Last name must be 3 characters",
-      "lastName"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Last name must be 3 characters",
+        "lastName"
+      )
     );
 
   if (emailSanitized.length < 5)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Email must be 5 characters",
-      "email"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Email must be 5 characters",
+        "email"
+      )
     );
 
   if (companySanitized.length < 5)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Company must be 5 characters",
-      "company"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Company must be 5 characters",
+        "company"
+      )
     );
 
   // Check only letters
   if (!REGX.NAME.test(firstNameSanitized))
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "First name must contain only letters (no numbers or symbols)",
-      "firstName"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "First name must contain only letters (no numbers or symbols)",
+        "firstName"
+      )
     );
 
   if (lastNameSanitized.length > 0 && !REGX.NAME.test(lastNameSanitized))
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Last name must contain only letters (no numbers or symbols)",
-      "lastName"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Last name must contain only letters (no numbers or symbols)",
+        "lastName"
+      )
     );
 
   if (!REGX.EMAIL.test(emailSanitized))
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Invalid email format",
-      "email"
+    return next(
+      new ApiError(STATUS_CODES.BAD_REQUEST, "Invalid email format", "email")
     );
 
   if (!REGX.PASSWORD.test(passwordSanitized))
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Password must be 8-15 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
-      "password"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Password must be 8-15 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.",
+        "password"
+      )
     );
 
   // Role Base
   if (role === ROLES.ADMIN && !company)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Company name is required for admin",
-      "company"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Company name is required for admin",
+        "company"
+      )
     );
 
   if ((role === ROLES.MANAGER || role === ROLES.DEVELOPER) && !inviteCode)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Invite code is required for workspace access",
-      "inviteCode"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Invite code is required for workspace access",
+        "inviteCode"
+      )
     );
 
   // Capitalize first letter
