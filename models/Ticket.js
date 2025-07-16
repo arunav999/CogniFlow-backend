@@ -47,6 +47,8 @@ const TicketSchema = new mongoose.Schema(
     assignedMembers: [{ type: refType, ref: "User" }],
     // Reference to the related project
     relatedProject: { type: refType, ref: "Project" },
+    // Reference to the workspace
+    workspaceRef: { type: refType, ref: "Workspace" },
     // List of tasks associated with the ticket
     tasks: [
       {

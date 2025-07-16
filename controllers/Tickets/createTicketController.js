@@ -8,6 +8,7 @@ import ApiError from "../../errors/Apierror.js";
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
 // Models
+import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
 import Ticket from "../../models/Ticket.js";
 
@@ -18,6 +19,7 @@ export const createTicketController = async (req, res, next) => {
 
   // Destructure ticket details from request body
   const {
+    workspaceId,
     projectId,
     ticketStatus,
     ticketType,
@@ -30,6 +32,11 @@ export const createTicketController = async (req, res, next) => {
   } = req.body;
 
   try {
+    // Find the workspace by ID
+    const findWorkspace = await Workspace.findById(workspaceId);
+    if (!findWorkspace)
+      throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
+
     // Find the project to associate with the ticket
     const findProject = await Project.findById(projectId);
     if (!findProject)
@@ -58,6 +65,7 @@ export const createTicketController = async (req, res, next) => {
       attachments,
       createdByUserId: userId,
       relatedProject: projectId,
+      workspaceRef: workspaceId,
       tasks: tasks || [],
     });
 
@@ -74,6 +82,8 @@ export const createTicketController = async (req, res, next) => {
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "Ticket created successfully",
+      workspaceRef: newTicket.workspaceRef,
+      projectRef: newTicket.relatedProject,
       ticketDetails: {
         id: newTicketId,
         status: newTicket.ticketStatus,
@@ -84,7 +94,6 @@ export const createTicketController = async (req, res, next) => {
         deadline: newTicket.ticketDeadline,
         createdBy: newTicket.createdByUserId,
         assignmedMembers: newTicket.assignedMembers,
-        relatedProject: newTicket.relatedProject,
         tasks: newTicket.tasks.map((task) => ({
           title: task.title,
           completed: task.completed,

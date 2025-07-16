@@ -26,6 +26,9 @@ export const deleteWorkspaceById = async (req, res, next) => {
         message: "You are not authorized to delete this workspace",
       });
 
+    // === Cascade delete: Remove all related tickets ===
+    await Ticket.deleteMany({ workspaceRef: workspaceId });
+
     // === Cascade delete: Remove all related projects ===
     await Project.deleteMany({ workspaceRef: workspaceId });
 
