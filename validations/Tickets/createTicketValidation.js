@@ -89,12 +89,33 @@ export const createTicketValidator = (req, res, next) => {
       new ApiError(STATUS_CODES.BAD_REQUEST, "Tasks must be an array", "")
     );
 
-  const validateTasks = (req.body.tasks || []).map((task) => {
-    const taskSanitized = task.title.trim();
+  // const validateTasks = (req.body.tasks || []).map((task) => {
+  //   const taskSanitized = task.title.trim();
 
+  //   if (
+  //     typeof task.title !== "string" ||
+  //     (taskSanitized.length > 0 && taskSanitized.length < 5)
+  //   )
+  //     return next(
+  //       new ApiError(
+  //         STATUS_CODES.BAD_REQUEST,
+  //         "Each task title must be a string with at least 5 characters",
+  //         ""
+  //       )
+  //     );
+
+  //   return {
+  //     title: taskSanitized,
+  //     completed: !!task.completed,
+  //   };
+  // });
+
+  const validateTasks = [];
+  for (const task of req.body.tasks || []) {
+    const taskSanitized = task.title.trim();
     if (
       typeof task.title !== "string" ||
-      (taskSanitized.length > 0 && taskSanitized.length < 5)
+      (taskSanitized.lenght > 0 && taskSanitized.length < 5)
     )
       return next(
         new ApiError(
@@ -104,11 +125,8 @@ export const createTicketValidator = (req, res, next) => {
         )
       );
 
-    return {
-      title: taskSanitized,
-      completed: !!task.completed,
-    };
-  });
+    validateTasks.push({ title: taskSanitized, completed: !!task.completed });
+  }
 
   // Check role
   const userRole = req.user.role;
