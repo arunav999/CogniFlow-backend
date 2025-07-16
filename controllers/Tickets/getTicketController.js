@@ -34,7 +34,10 @@ export const getAllTicketsController = async (req, res, next) => {
         priority: ticket.ticketPriority,
         title: ticket.ticketTitle,
         description: ticket.ticketDescription,
-        attachments: ticket.attachments.map((image) => ({ url: image })),
+        attachments: ticket.attachments.map((item) => ({
+          url: item.url,
+          type: item.type,
+        })),
         createdBy: ticket.createdByUserId,
         updatedBy: ticket.updatedByUserId,
         assignedMembers: ticket.assignedMembers.map((member) => ({ member })),
@@ -75,7 +78,10 @@ export const getTicketByIdController = async (req, res, next) => {
         priority: findTicket.ticketPriority,
         title: findTicket.ticketTitle,
         description: findTicket.ticketDescription,
-        attachments: findTicket.attachments.map((image) => ({ url: image })),
+        attachments: findTicket.attachments.map((item) => ({
+          url: item.url,
+          type: item.type,
+        })),
         createdBy: findTicket.createdByUserId,
         updatedBy: findTicket.updatedByUserId,
         assignedMembers: findTicket.assignedMembers.map((member) => ({

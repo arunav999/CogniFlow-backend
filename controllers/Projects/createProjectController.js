@@ -48,14 +48,6 @@ export const createProjectController = async (req, res, next) => {
     // Get new project's ID
     const newProjectId = newProject._id;
 
-    // // Check if project already exists in workspace
-    // if (workspace.projects.includes(newProjectId))
-    //   throw new ApiError(
-    //     STATUS_CODES.CONFLICT,
-    //     "This project already exists in this workspace",
-    //     ""
-    //   );
-
     // Add project to workspace's projects array
     await Workspace.updateOne(
       { _id: workspaceId },

@@ -21,7 +21,7 @@ export const deleteTicketByIdController = async (req, res, next) => {
     // Validate ticket existence
     const findTicket = await Ticket.findById(ticketId);
     if (!findTicket)
-      return new ApiError(STATUS_CODES.NOT_FOUND, "No ticket found", "");
+      return next(new ApiError(STATUS_CODES.NOT_FOUND, "No ticket found", ""));
 
     // TODO: Cascade delete related comments if needed
 

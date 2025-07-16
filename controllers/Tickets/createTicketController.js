@@ -30,6 +30,23 @@ export const createTicketController = async (req, res, next) => {
   } = req.body;
 
   try {
+    // Find the project to associate with the ticket
+    const findProject = await Project.findById(projectId);
+    if (!findProject)
+      throw new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", "");
+
+    // Check if ticket already exists in the project
+    const existingTicket = await Ticket.findOne({
+      ticketTitle,
+      relatedProject: projectId,
+    });
+    if (existingTicket)
+      throw new ApiError(
+        STATUS_CODES.CONFLICT,
+        "This ticket already exists in this project",
+        ""
+      );
+
     // Create new ticket document
     const newTicket = await Ticket.create({
       ticketStatus,
@@ -46,19 +63,6 @@ export const createTicketController = async (req, res, next) => {
 
     // Get new ticket ID
     const newTicketId = newTicket._id;
-
-    // Find the project to associate with the ticket
-    const findProject = await Project.findById(projectId);
-    if (!findProject)
-      throw new ApiError(STATUS_CODES.NOT_FOUND, "Project not found", "");
-
-    // Check if ticket already exists in the project
-    if (findProject.tickets.includes(newTicketId))
-      throw new ApiError(
-        STATUS_CODES.CONFLICT,
-        "This ticket already exists in this project",
-        ""
-      );
 
     // Add ticket to project's tickets array
     await Project.updateOne(
@@ -89,8 +93,6 @@ export const createTicketController = async (req, res, next) => {
           url: item.url,
           type: item.type,
         })),
-        uploadedAt: newTicket.uploadedAt,
-        uploadedBy: newTicket.uploadedBy,
       },
     });
   } catch (error) {
