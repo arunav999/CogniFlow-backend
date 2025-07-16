@@ -6,7 +6,9 @@ import ApiError from "../../errors/Apierror.js";
 
 // Status code constants and roles
 import { STATUS_CODES } from "../../constants/statusCodes.js";
-import { ROLES } from "../../constants/roles.js";
+
+// Roles Constants
+import { ROLE_PERMISSIONS } from "../../constants/roleDefinitions.js";
 
 // Middleware to validate create workspace input
 export const createWorkspaceValidator = (req, res, next) => {
@@ -15,18 +17,18 @@ export const createWorkspaceValidator = (req, res, next) => {
 
   // Presence check: workspace name
   if (!workspaceName)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Workspace name is required",
-      "workspaceName"
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Workspace name is required",
+        "workspaceName"
+      )
     );
 
   // Presence check: user
   if (!req.user)
-    throw new ApiError(
-      STATUS_CODES.UNAUTHORIZED,
-      "Not authorized. No user",
-      ""
+    return next(
+      new ApiError(STATUS_CODES.UNAUTHORIZED, "Not authorized. No user", "")
     );
 
   // Content validation: sanitize and check length/format
@@ -35,10 +37,12 @@ export const createWorkspaceValidator = (req, res, next) => {
 
   // Workspace name length check
   if (workspaceNameSanitized.length < 5)
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Workspace name must be atleast 5 characters",
-      ""
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Workspace name must be atleast 5 characters",
+        ""
+      )
     );
 
   // Workspace description length check (if provided)
@@ -46,19 +50,23 @@ export const createWorkspaceValidator = (req, res, next) => {
     workspaceDescriptionSanitized.length > 0 &&
     workspaceDescriptionSanitized.length < 15
   )
-    throw new ApiError(
-      STATUS_CODES.BAD_REQUEST,
-      "Workspace description must be atleast 15 characters",
-      ""
+    return next(
+      new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Workspace description must be atleast 15 characters",
+        ""
+      )
     );
 
   // Role check: only admin can create workspaces
-  const user = req.user;
-  if (user.role !== ROLES.ADMIN)
-    throw new ApiError(
-      STATUS_CODES.FORBIDDEN,
-      "You are not authorized to create workspaces",
-      ""
+  const userRole = req.user.role;
+  if (!ROLE_PERMISSIONS[userRole]?.canManageWorkspaces)
+    return next(
+      new ApiError(
+        STATUS_CODES.FORBIDDEN,
+        "You are not authorized to create workspaces",
+        ""
+      )
     );
 
   // Overwrite req.body with sanitized values

@@ -36,8 +36,6 @@ export const deleteTicketByIdController = async (req, res, next) => {
     if (!findTicket)
       return next(new ApiError(STATUS_CODES.NOT_FOUND, "No ticket found", ""));
 
-    // TODO: Cascade delete related comments if needed
-
     // Remove ticket reference from all projects
     await Project.updateMany(
       { tickets: ticketId },
