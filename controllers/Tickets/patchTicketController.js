@@ -5,6 +5,7 @@
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
 // Models
+import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
 import Ticket from "../../models/Ticket.js";
 
@@ -13,6 +14,7 @@ export const patchTicketByIdController = async (req, res, next) => {
   // Extract user ID and ticket details from request
   const userId = req.user._id;
   const {
+    workspaceId,
     projectId,
     ticketStatus,
     ticketType,
@@ -26,6 +28,13 @@ export const patchTicketByIdController = async (req, res, next) => {
   const ticketId = req.params.id;
 
   try {
+    // Validate workspace and project existence
+    const findWorkspace = await Workspace.findById(workspaceId);
+    if (!findWorkspace)
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .json({ success: false, message: "No workspace found" });
+
     // Find project and ticket by their IDs
     const findProject = await Project.findById(projectId);
     const findTicket = await Ticket.findById(ticketId);

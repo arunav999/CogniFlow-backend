@@ -29,6 +29,7 @@ export const getAllTicketsController = async (req, res, next) => {
       tickets: getAllTickets.map((ticket) => ({
         id: ticket._id,
         projectRef: ticket.relatedProject,
+        workspaceRef: ticket.workspaceRef,
         status: ticket.ticketStatus,
         type: ticket.ticketType,
         priority: ticket.ticketPriority,
@@ -73,6 +74,7 @@ export const getTicketByIdController = async (req, res, next) => {
       ticket: {
         id: ticketId,
         projectRef: findTicket.relatedProject,
+        workspaceRef: findTicket.workspaceRef,
         status: findTicket.ticketStatus,
         type: findTicket.ticketType,
         priority: findTicket.ticketPriority,
