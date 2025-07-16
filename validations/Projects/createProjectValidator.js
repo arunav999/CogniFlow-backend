@@ -42,7 +42,10 @@ export const createProjectValidator = (req, res, next) => {
     );
 
   // Project description length check (if provided)
-  if (projectDescriptionSanitized > 0 && projectDescriptionSanitized < 15)
+  if (
+    projectDescriptionSanitized.length > 0 &&
+    projectDescriptionSanitized.length < 15
+  )
     return next(
       new ApiError(
         STATUS_CODES.BAD_REQUEST,
