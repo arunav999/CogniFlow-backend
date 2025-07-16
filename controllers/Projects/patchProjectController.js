@@ -1,11 +1,16 @@
-// Constants
+// ==================== Patch Project Controller ====================
+// Handles updating a project's details and returns the updated project
+
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Models
+// Models for workspace and project
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
 
+// Main patchProjectById controller
 export const patchProjectByIdController = async (req, res, next) => {
+  // Extract user and project details from request
   const userId = req.user._id;
   const {
     workspaceId,
@@ -17,22 +22,23 @@ export const patchProjectByIdController = async (req, res, next) => {
   const projectId = req.params.id;
 
   try {
+    // Find workspace and project by ID
     const findWorkspace = await Workspace.findById(workspaceId);
     const findProject = await Project.findById(projectId);
 
-    // If no worksapce
+    // If workspace not found, respond with error
     if (!findWorkspace)
       return res
         .status(STATUS_CODES.NOT_FOUND)
         .json({ success: false, message: "No workspace found" });
 
-    // if no project
+    // If project not found, respond with error
     if (!findProject)
       return res
         .status(STATUS_CODES.NOT_FOUND)
         .json({ success: false, message: "No project found" });
 
-    // Update project
+    // Update project details
     const updatedProject = await Project.findByIdAndUpdate(
       projectId,
       {
@@ -47,7 +53,7 @@ export const patchProjectByIdController = async (req, res, next) => {
       { new: true }
     );
 
-    // response
+    // Respond with updated project info
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Project updated successfully",

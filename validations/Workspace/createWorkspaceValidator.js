@@ -1,15 +1,19 @@
-// Error
+// ==================== Create Workspace Validator ====================
+// Validates workspace creation request body for required fields and correct format
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Status code constants and roles
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
 
+// Middleware to validate create workspace input
 export const createWorkspaceValidator = (req, res, next) => {
+  // Extract workspace name and description from request body
   const { workspaceName, workspaceDescription = "" } = req.body;
 
-  // ========== PRESENSE CHECK ==========
-  // workspace name
+  // Presence check: workspace name
   if (!workspaceName)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -17,7 +21,7 @@ export const createWorkspaceValidator = (req, res, next) => {
       "workspaceName"
     );
 
-  // no user
+  // Presence check: user
   if (!req.user)
     throw new ApiError(
       STATUS_CODES.UNAUTHORIZED,
@@ -25,11 +29,11 @@ export const createWorkspaceValidator = (req, res, next) => {
       ""
     );
 
-  // ========== CONTENT VALIDATION ==========
+  // Content validation: sanitize and check length/format
   let workspaceNameSanitized = workspaceName.trim();
   let workspaceDescriptionSanitized = workspaceDescription.trim();
 
-  // check length
+  // Workspace name length check
   if (workspaceNameSanitized.length < 5)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -37,6 +41,7 @@ export const createWorkspaceValidator = (req, res, next) => {
       ""
     );
 
+  // Workspace description length check (if provided)
   if (
     workspaceDescriptionSanitized.length > 0 &&
     workspaceDescriptionSanitized.length < 15
@@ -47,7 +52,7 @@ export const createWorkspaceValidator = (req, res, next) => {
       ""
     );
 
-  // check if admin?
+  // Role check: only admin can create workspaces
   const user = req.user;
   if (user.role !== ROLES.ADMIN)
     throw new ApiError(
@@ -56,7 +61,7 @@ export const createWorkspaceValidator = (req, res, next) => {
       ""
     );
 
-  // Overwrite req.body
+  // Overwrite req.body with sanitized values
   req.body.workspaceName = workspaceNameSanitized;
   req.body.workspaceDescription = workspaceDescriptionSanitized;
 

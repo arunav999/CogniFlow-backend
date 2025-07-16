@@ -1,28 +1,32 @@
-// Error
+// ==================== Register Controller ====================
+// Handles user registration, workspace assignment, and session creation
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Constants for status codes and roles
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
 
-// Modles
+// Models for user and workspace
 import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
 
-// Auth model
+// Session model for authentication
 import Session from "../../models/Token Models/Session.js";
 
-// Utils
+// Utility functions for token and password hashing
 import { generateToken } from "../../utils/generateToken.js";
 import { bcryptHash, cryptoHash } from "../../utils/generateHash.js";
 
-// ===== Register User Controller =====
+// Main registration controller
 export const registerUser = async (req, res, next) => {
+  // Extract registration fields from request body
   const { firstName, lastName, email, password, role, company, inviteCode } =
     req.body;
 
   try {
-    // If user exists
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return next(
@@ -32,10 +36,10 @@ export const registerUser = async (req, res, next) => {
 
     let workspaceId = null;
 
-    // Admin flow
+    // Admins do not require a workspace
     if (role === ROLES.ADMIN) workspaceId = null;
 
-    // Manager flow / Developer flow
+    // Managers/Developers require a valid invite code for workspace
     if (role === ROLES.MANAGER || role === ROLES.DEVELOPER) {
       const workspace = await Workspace.findOne({ inviteCode });
 

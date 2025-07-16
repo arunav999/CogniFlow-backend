@@ -1,21 +1,25 @@
-// Error
+// ==================== Create Project Controller ====================
+// Handles creation of a new project and updates the workspace
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Models
+// Models for workspace and project
 import Workspace from "../../models/Workspace.js";
 import Project from "../../models/Project.js";
 
+// Main createProjectController
 export const createProjectController = async (req, res, next) => {
+  // Extract user and project details from request
   const userId = req.user._id;
-
   const { workspaceId, projectName, projectDescription, projectIcon } =
     req.body;
 
   try {
-    // Creating project
+    // Create new project document
     const newProject = await Project.create({
       projectName,
       projectDescription,
@@ -24,16 +28,15 @@ export const createProjectController = async (req, res, next) => {
       createdByUserId: userId,
     });
 
-    // Update Workspace
+    // Get new project's ID
     const newProjectId = newProject._id;
 
-    // find workspace
+    // Find workspace by ID
     const workspace = await Workspace.findById(workspaceId);
-    // if no workspace
     if (!workspace)
       throw new ApiError(STATUS_CODES.NOT_FOUND, "Workspace not found", "");
 
-    // check if project already a part of the workspace
+    // Check if project already exists in workspace
     if (workspace.projects.includes(newProjectId))
       throw new ApiError(
         STATUS_CODES.CONFLICT,
@@ -41,13 +44,13 @@ export const createProjectController = async (req, res, next) => {
         ""
       );
 
-    // if not a part
+    // Add project to workspace's projects array
     await Workspace.updateOne(
       { _id: workspaceId },
       { $addToSet: { projects: newProjectId } }
     );
 
-    // Send response
+    // Respond with project details
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "Project created successfully",

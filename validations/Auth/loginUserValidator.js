@@ -1,19 +1,23 @@
-// Error
+// ==================== Login User Validator ====================
+// Validates login request body for required fields and correct format
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Status code constants and regex
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { REGX } from "../../constants/regx.js";
 
+// Middleware to validate login user input
 const loginUserValidator = async (req, res, next) => {
+  // Extract email and password from request body
   const { email, password } = req.body;
 
-  // ===== PRESENSE CHECK =====
-  // email
+  // Presence check: email
   if (!email)
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email");
 
-  // password
+  // Presence check: password
   if (!password)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -21,11 +25,11 @@ const loginUserValidator = async (req, res, next) => {
       "password"
     );
 
-  // ===== CONTENT VALIDATION =====
+  // Content validation: sanitize and check length/format
   let emailSanitized = email.trim().toLowerCase();
   let passwordSanitized = password.trim();
 
-  // check length
+  // Email length check
   if (emailSanitized.length < 5)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -33,6 +37,7 @@ const loginUserValidator = async (req, res, next) => {
       "email"
     );
 
+  // Email format check
   if (!REGX.EMAIL.test(emailSanitized))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -40,11 +45,11 @@ const loginUserValidator = async (req, res, next) => {
       "email"
     );
 
-  // Overwrite req.body
+  // Overwrite req.body with sanitized values
   req.body.email = emailSanitized;
   req.body.password = passwordSanitized;
 
-  // Next moddleware/controller
+  // Proceed to next middleware/controller
   next();
 };
 

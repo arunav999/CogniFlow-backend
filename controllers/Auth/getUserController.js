@@ -1,10 +1,16 @@
-// Constants
+// ==================== Get User Controller ====================
+// Returns the authenticated user's profile information
+
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
+// Main getUser controller
 export const getUser = async (req, res, next) => {
   try {
+    // Get user from request (set by auth middleware)
     const user = req.user;
 
+    // Respond with user profile details
     res.status(STATUS_CODES.OK).json({
       success: true,
       user: {

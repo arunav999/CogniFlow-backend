@@ -1,12 +1,17 @@
+// ==================== Workspace Routes ====================
+// Handles CRUD operations for workspaces and membership
 import { Router } from "express";
 
-// Protect
+// ==================== Middleware ====================
+// Protect workspace routes with authentication
 import protect from "../middlewares/authMiddleware.js";
 
-// Validations
+// ==================== Validators ====================
+// Validate workspace creation and update requests
 import { createWorkspaceValidator } from "../validations/Workspace/createWorkspaceValidator.js";
 
-// Controllers
+// ==================== Controllers ====================
+// Controller functions for each workspace endpoint
 import { createWorkspaceController } from "../controllers/Workspaces/createWorkspaceController.js";
 import {
   getAllWorkspaces,
@@ -15,22 +20,24 @@ import {
 import { patchWorkspaceById } from "../controllers/Workspaces/patchWorkspaceController.js";
 import { deleteWorkspaceById } from "../controllers/Workspaces/deleteWorkspace.js";
 
+// Create a new router instance
 const router = Router();
 
-// ========== ROUTES ==========
-// Create workspace
+// ==================== Route Definitions ====================
+// Create a new workspace
 router.post("/", protect, createWorkspaceValidator, createWorkspaceController);
 
-// Get workspace
+// Get all workspaces for the authenticated user
 router.get("/", protect, getAllWorkspaces);
 
-// Get a workspace using id
+// Get a specific workspace by its ID
 router.get("/:id", protect, getWorkspaceById);
 
-// Update workspace using id
+// Update a workspace by its ID
 router.patch("/:id", protect, createWorkspaceValidator, patchWorkspaceById);
 
-// Delete workspace using id
+// Delete a workspace by its ID
 router.delete("/:id", protect, deleteWorkspaceById);
 
+// Export the router for use in the main server
 export default router;

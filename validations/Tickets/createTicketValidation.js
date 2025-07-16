@@ -1,19 +1,23 @@
-// Error
+// ==================== Create Ticket Validator ====================
+// Validates ticket creation request body for required fields and correct format
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constant
+// Status code constants and roles
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
 
+// Middleware to validate create ticket input
 export const createTicketValidator = (req, res, next) => {
+  // Extract ticket title, description, and deadline from request body
   const { ticketTitle, ticketDescription, ticketDeadline } = req.body;
 
-  // ========== PRESENSE CHECK ==========
-  // ticket name
+  // Presence check: ticket title
   if (!ticketTitle)
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Ticket name is required", "");
 
-  // ticket description
+  // Presence check: ticket description
   if (!ticketDescription)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -21,6 +25,7 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
+  // Presence check: ticket deadline
   if (!ticketDeadline)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -28,13 +33,13 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
-  // ========== CONTENT VALIDATION ==========
+  // Content validation: sanitize and check length/format
   const deadlineDate = new Date(ticketDeadline);
   const now = new Date();
   let ticketTitleSanitized = ticketTitle.trim();
   let ticketDescriptionSanitized = ticketDescription.trim();
 
-  // check length
+  // Ticket title length check
   if (ticketTitleSanitized.length < 5)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -42,6 +47,7 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
+  // Ticket description length check
   if (ticketDescriptionSanitized.length < 15)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -49,6 +55,7 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
+  // Deadline date format check
   if (isNaN(deadlineDate))
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -56,6 +63,7 @@ export const createTicketValidator = (req, res, next) => {
       ""
     );
 
+  // Deadline must be in the future
   if (deadlineDate <= now)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,

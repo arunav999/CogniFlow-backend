@@ -1,15 +1,20 @@
-// Error
+// ==================== Register User Validator ====================
+// Validates registration request body for required fields and correct format
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Status code constants, roles, and regex
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
 import { REGX } from "../../constants/regx.js";
 
+// Middleware to validate register user input
 const registerUserValidator = (req, res, next) => {
+  // Extract registration fields from request body
   const {
     firstName,
-    lastName="",
+    lastName = "",
     email,
     password,
     confirmPassword,
@@ -18,8 +23,7 @@ const registerUserValidator = (req, res, next) => {
     inviteCode,
   } = req.body;
 
-  // ===== PRESENSE CHECK =====
-  // first name
+  // Presence check: first name
   if (!firstName)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -27,11 +31,11 @@ const registerUserValidator = (req, res, next) => {
       "firstName"
     );
 
-  // email
+  // Presence check: email
   if (!email)
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Email is required", "email");
 
-  // password
+  // Presence check: password
   if (!password)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -39,7 +43,7 @@ const registerUserValidator = (req, res, next) => {
       "password"
     );
 
-  // confirm-password
+  // Presence check: confirm password
   if (!confirmPassword)
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,
@@ -47,11 +51,11 @@ const registerUserValidator = (req, res, next) => {
       "confirmPassword"
     );
 
-  // role
+  // Presence check: role
   if (!role)
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Role is required", "role");
 
-  // check password
+  // Password match check
   if (password.trim() !== confirmPassword.trim())
     throw new ApiError(
       STATUS_CODES.BAD_REQUEST,

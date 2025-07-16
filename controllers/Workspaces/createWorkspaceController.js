@@ -1,17 +1,21 @@
-// Constants
+// ==================== Create Workspace Controller ====================
+// Handles creation of a new workspace and updates the user
+
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Models
+// Models for user and workspace
 import User from "../../models/User.js";
 import Workspace from "../../models/Workspace.js";
 
+// Main createWorkspaceController
 export const createWorkspaceController = async (req, res, next) => {
+  // Extract user and workspace details from request
   const userId = req.user._id;
-
   const { workspaceName, workspaceDescription } = req.body;
 
   try {
-    // Creating workspace
+    // Create new workspace document
     const newWorkspace = await Workspace.create({
       workspaceName,
       workspaceDescription,
@@ -19,15 +23,16 @@ export const createWorkspaceController = async (req, res, next) => {
       workspaceMembers: [userId],
     });
 
+    // Get new workspace's ID
     const newWorkspaceId = newWorkspace._id;
 
-    // Update User
+    // Add workspace to user's workspaces array
     await User.updateOne(
       { _id: userId },
       { $addToSet: { workspaces: newWorkspaceId } }
     );
 
-    // Send response
+    // Respond with workspace details
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "Workspace created successfully",

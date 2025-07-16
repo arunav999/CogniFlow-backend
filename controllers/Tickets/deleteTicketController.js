@@ -1,36 +1,40 @@
-// Error
+// ==================== Delete Ticket Controller ====================
+// Handles deletion of a ticket and removes its reference from projects
+
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
 // Models
 import Project from "../../models/Project.js";
 import Ticket from "../../models/Ticket.js";
 
+// Main deleteTicketByIdController function
 export const deleteTicketByIdController = async (req, res, next) => {
+  // Extract user and ticket IDs from request
   const userId = req.user._id;
   const ticketId = req.params.id;
 
   try {
-    // === Validation: Check if ticket exists ===
+    // Validate ticket existence
     const findTicket = await Ticket.findById(ticketId);
-    // if no ticket
     if (!findTicket)
       return new ApiError(STATUS_CODES.NOT_FOUND, "No ticket found", "");
 
-    // === Cascade delete: Remove all related comments ===
+    // TODO: Cascade delete related comments if needed
 
-    // === Remove ticket reference from project ===
+    // Remove ticket reference from all projects
     await Project.updateMany(
       { tickets: ticketId },
       { $pull: { tickets: ticketId } }
     );
 
-    // === Delete project ===
+    // Delete the ticket from database
     await Ticket.findByIdAndDelete(ticketId);
 
-    // === Response ===
+    // Respond with success message
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Ticket and related data deleted successfully",

@@ -1,35 +1,36 @@
-// Bcrypt
+// ==================== Login Controller ====================
+// Handles user login, session and refresh token creation, and cookie management
+
+// Bcrypt for password comparison
 import bcrypt from "bcryptjs";
 
-// Error
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Constants for status codes
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Modles
+// Models for user, session, and refresh tokens
 import User from "../../models/User.js";
-
-// Auth model
 import Session from "../../models/Token Models/Session.js";
 import RefreshToken from "../../models/Token Models/Refresh.js";
 
-// Utils
+// Utility functions for token generation and hashing
 import {
   generateToken,
   generateRefreshToken,
 } from "../../utils/generateToken.js";
 import { cryptoHash } from "../../utils/generateHash.js";
 
-// ===== Login User Controller =====
+// Main login controller
 export const loginUser = async (req, res, next) => {
   const { email, password, remember } = req.body;
 
   try {
-    // Get user
+    // Find user by email
     const user = await User.findOne({ email });
 
-    // If no-user
+    // If user not found or password does not match
     if (!user || !(await bcrypt.compare(password, user.password)))
       return next(
         new ApiError(
@@ -39,20 +40,14 @@ export const loginUser = async (req, res, next) => {
         )
       );
 
-    // If user
-
-    // ===== SENDING REFRESH TOKEN =====
+    // If "remember" is set, create and store a refresh token
     if (remember) {
       const refreshToken = generateRefreshToken(user._id);
       const hashedRefreshToken = cryptoHash(refreshToken);
-
-      // Store it in DB
       await RefreshToken.create({
         user: user._id,
         token: hashedRefreshToken,
       });
-
-      // Cookie for Refresh token
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -62,15 +57,13 @@ export const loginUser = async (req, res, next) => {
       });
     }
 
+    // Create and store login session token
     const loginToken = generateToken(user._id);
     const hashedLoginToken = cryptoHash(loginToken);
-
-    // Store login Session in DB
     await Session.create({
       user: user._id,
       token: hashedLoginToken,
     });
-
     res.cookie("loginToken", loginToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -79,6 +72,7 @@ export const loginUser = async (req, res, next) => {
       maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
     });
 
+    // Respond with user details and redirect path
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Login successfull",

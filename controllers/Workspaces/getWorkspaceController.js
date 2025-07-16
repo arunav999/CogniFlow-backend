@@ -1,26 +1,31 @@
-// Constants
+// ==================== Get Workspace Controllers ====================
+// Handles fetching all workspaces for a user and fetching a workspace by ID
+
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Models
+// Workspace model
 import Workspace from "../../models/Workspace.js";
 
-// Get all workspaces
+// Get all workspaces for the authenticated user
 export const getAllWorkspaces = async (req, res, next) => {
   try {
-    // Get workspace
+    // Extract user ID from request
     const userId = req.user._id;
 
-    // Populate workspace
+    // Find all workspaces where user is a member
     const getAllWorkspacesAdmin = await Workspace.find({
       workspaceMembers: userId,
     });
 
+    // If no workspaces found, respond with error
     if (getAllWorkspacesAdmin.length === 0) {
       return res
         .status(STATUS_CODES.NOT_FOUND)
         .json({ succes: false, message: "No workspace created yet." });
     }
 
+    // Respond with list of workspaces
     res.status(STATUS_CODES.OK).json({
       succes: true,
       workspaces: getAllWorkspacesAdmin.map((workspace) => ({
@@ -38,19 +43,23 @@ export const getAllWorkspaces = async (req, res, next) => {
   }
 };
 
-// Get a single workspace by id
+// Get a workspace by its ID
 export const getWorkspaceById = async (req, res, next) => {
   try {
+    // Extract workspace ID from request params
     const workspaceId = req.params.id;
 
+    // Find workspace by ID
     const findWorkspace = await Workspace.findById(workspaceId);
 
+    // If workspace not found, respond with error
     if (!findWorkspace)
       return res.status(STATUS_CODES.NOT_FOUND).json({
         succes: false,
         message: "Workspace not found",
       });
 
+    // Respond with workspace details
     res.status(STATUS_CODES.OK).json({
       workspace: {
         id: findWorkspace._id,

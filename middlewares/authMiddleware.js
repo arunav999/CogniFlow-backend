@@ -1,24 +1,29 @@
-// JWT
+// ==================== Auth Middleware ====================
+// Protects routes by verifying JWT token and session validity
+
+// JWT for token verification
 import jwt from "jsonwebtoken";
 
-// Crypto
+// Crypto for hashing tokens
 import crypto from "crypto";
 
-// Models
+// Models for user and session
 import User from "../models/User.js";
 import Session from "../models/Token Models/Session.js";
 
-// Error
+// Error handling utility
 import ApiError from "../errors/Apierror.js";
 
-// Constant
+// Status code constants
 import { STATUS_CODES } from "../constants/statusCodes.js";
 
+// Middleware to protect routes
 const protect = async (req, res, next) => {
   try {
-    // Get cookies
+    // Get token from cookies
     const token = req.cookies?.loginToken || req.cookies?.token;
 
+    // If no token, deny access
     if (!token)
       return next(
         new ApiError(
@@ -31,13 +36,13 @@ const protect = async (req, res, next) => {
     // Verify JWT signature
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Hash token to check db
+    // Hash token for session lookup
     const hashedToken = crypto
       .createHash("sha3-256")
       .update(token)
       .digest("hex");
 
-    // Checking session with db
+    // Check session validity in database
     const session = await Session.findOne({ token: hashedToken });
 
     if (!session)
@@ -49,7 +54,7 @@ const protect = async (req, res, next) => {
         )
       );
 
-    // Attach User
+    // Attach user to request object
     const user = await User.findById(decoded.id).select("-password");
 
     if (!user)

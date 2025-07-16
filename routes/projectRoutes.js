@@ -1,12 +1,17 @@
+// ==================== Project Routes ====================
+// Handles CRUD operations for projects within workspaces
 import { Router } from "express";
 
-// Protect
+// ==================== Middleware ====================
+// Protect project routes with authentication
 import protect from "../middlewares/authMiddleware.js";
 
-// Validations
+// ==================== Validators ====================
+// Validate project creation and update requests
 import { createProjectValidator } from "../validations/Projects/createProjectValidator.js";
 
-// Controllers
+// ==================== Controllers ====================
+// Controller functions for each project endpoint
 import { createProjectController } from "../controllers/Projects/createProjectController.js";
 import {
   getAllProjectsController,
@@ -15,19 +20,20 @@ import {
 import { patchProjectByIdController } from "../controllers/Projects/patchProjectController.js";
 import { deleteProjectByIdController } from "../controllers/Projects/deleteProjectController.js";
 
+// Create a new router instance
 const router = Router();
 
-// ========== ROUTES ==========
-// Create project
+// ==================== Route Definitions ====================
+// Create a new project in a workspace
 router.post("/", protect, createProjectValidator, createProjectController);
 
-// Get all projects
+// Get all projects in a workspace
 router.get("/", protect, getAllProjectsController);
 
-// Get project by id
+// Get a specific project by its ID
 router.get("/:id", protect, getProjectByIdController);
 
-// Patch project
+// Update a project by its ID
 router.patch(
   "/:id",
   protect,
@@ -35,7 +41,8 @@ router.patch(
   patchProjectByIdController
 );
 
-// Delete project by id
+// Delete a project by its ID
 router.delete("/:id", protect, deleteProjectByIdController);
 
+// Export the router for use in the main server
 export default router;

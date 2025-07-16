@@ -1,18 +1,23 @@
-// 3rd party
+// ==================== Patch Attachment Controller ====================
+// Handles updating attachments for a ticket, including file uploads
+
+// Cloudinary and streamifier for file uploads
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
 
-// Error
+// Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
-// Constants
+// Status code constants and regex
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { REGX } from "../../constants/regx.js";
 
-// Models
+// Ticket model
 import Ticket from "../../models/Ticket.js";
 
+// Main patchAttachmentController function
 export const patchAttachmentController = async (req, res, next) => {
+  // Extract ticket ID and attachment URL from request
   const ticketId = req.params.id;
   const { attachmentUrl } = req.body;
 

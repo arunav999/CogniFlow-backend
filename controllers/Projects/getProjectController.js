@@ -1,26 +1,29 @@
-// Constants
+// ==================== Get Project Controllers ====================
+// Handles fetching all projects for a workspace and fetching a project by ID
+
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Models
+// Project model
 import Project from "../../models/Project.js";
 
-// Get all projects
+// Get all projects in a workspace
 export const getAllProjectsController = async (req, res, next) => {
   try {
-    // Get workspace
+    // Extract workspace ID from request body
     const { workspaceId } = req.body;
 
-    // === Find All: Projects that belongs to that workspace
+    // Find all projects belonging to the workspace
     const getAllProjects = await Project.find({ workspaceRef: workspaceId });
 
-    // if no project
+    // If no projects found, respond with error
     if (getAllProjects.length === 0)
       return res.status(STATUS_CODES.NOT_FOUND).json({
         success: false,
         message: "No projects created for this workspace.",
       });
 
-    // response
+    // Respond with list of projects
     res.status(STATUS_CODES.OK).json({
       success: true,
       projects: getAllProjects.map((project) => ({
@@ -41,21 +44,22 @@ export const getAllProjectsController = async (req, res, next) => {
   }
 };
 
-// Get project by id
+// Get a project by its ID
 export const getProjectByIdController = async (req, res, next) => {
   try {
+    // Extract project ID from request params
     const projectId = req.params.id;
 
-    // Find project
+    // Find project by ID
     const findProject = await Project.findById(projectId);
 
-    // If no project
+    // If project not found, respond with error
     if (!findProject)
       return res
         .status(STATUS_CODES.NOT_FOUND)
         .json({ success: false, message: "No project found" });
 
-    // response
+    // Respond with project details
     res.status(STATUS_CODES.OK).json({
       success: true,
       project: {

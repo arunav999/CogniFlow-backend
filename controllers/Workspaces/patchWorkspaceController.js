@@ -1,23 +1,27 @@
-// Constants
+// ==================== Patch Workspace Controller ====================
+// Handles updating a workspace's details and returns the updated workspace
+
+// Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 
-// Models
+// Workspace model
 import Workspace from "../../models/Workspace.js";
 
-// Patch single waorkspace by id
+// Main patchWorkspaceById controller
 export const patchWorkspaceById = async (req, res, next) => {
+  // Extract user and workspace IDs from request
   const userId = req.user._id;
   const workspaceId = req.params.id;
 
   try {
-    // If no workspace
+    // Find workspace by ID
     const findWorkspace = await Workspace.findById(workspaceId);
     if (!findWorkspace)
       return res
         .status(STATUS_CODES.NOT_FOUND)
         .json({ success: false, message: "No workspace found" });
 
-    // Find and update
+    // Update workspace details
     const updatedWorkspace = await Workspace.findByIdAndUpdate(
       workspaceId,
       {
@@ -29,7 +33,7 @@ export const patchWorkspaceById = async (req, res, next) => {
       { new: true }
     );
 
-    // response
+    // Respond with updated workspace info
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Workspace updated successfully",
