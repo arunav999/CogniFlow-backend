@@ -14,6 +14,7 @@ export const getUser = async (req, res, next) => {
     res.status(STATUS_CODES.OK).json({
       success: true,
       user: {
+        isVerified: user.isVerified,
         _id: user._id,
         avatar: {
           url: user.avatar.url,

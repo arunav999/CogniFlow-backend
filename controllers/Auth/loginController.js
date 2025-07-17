@@ -77,6 +77,7 @@ export const loginUser = async (req, res, next) => {
       success: true,
       message: "Login successfull",
       userDetails: {
+        isVerified: user.isVerified,
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,

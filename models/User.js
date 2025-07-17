@@ -8,6 +8,8 @@ import { ROLES } from "../constants/roles.js";
 // User schema definition
 const UserSchema = new mongoose.Schema(
   {
+    // Verified status of the user
+    isVerified: { type: Boolean, default: false },
     // First name of the user
     firstName: { type: String, required: true },
     // Last name of the user

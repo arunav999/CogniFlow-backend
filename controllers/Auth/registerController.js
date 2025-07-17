@@ -91,6 +91,7 @@ export const registerUser = async (req, res, next) => {
       success: true,
       message: "User created successfully",
       userDetails: {
+        isVerified: newUser.isVerified,
         id: newUser._id,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
