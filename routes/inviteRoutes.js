@@ -14,6 +14,7 @@ import rateLimitMiddleware from "../middlewares/rateLimiter";
 
 // ===================== Controllers ====================
 import { generateInviteCodeController } from "../controllers/Invite/generateInviteCodeController";
+import { acceptInviteController } from "../controllers/Invite/acceptInviteController.js";
 
 // Create a new router instance
 const router = Router();
@@ -28,4 +29,4 @@ router.post(
 );
 
 // Accept an invite code
-router.post("/accept", protect, rateLimitMiddleware);
+router.post("/accept", protect, rateLimitMiddleware, acceptInviteController);
