@@ -17,3 +17,10 @@ export const generateRefreshToken = (userId) => {
     expiresIn: "30d",
   });
 };
+
+// Generate an invite token for a workspace (expires in 15 minutes)
+export const generateInviteToken = (inviteCode) => {
+  return jwt.sign({ code: inviteCode }, process.env.INVITE_TOKEN_SECRET, {
+    expiresIn: "15m",
+  });
+};
