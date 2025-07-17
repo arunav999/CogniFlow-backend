@@ -9,7 +9,7 @@ import Workspace from "../../models/Workspace.js";
 import InviteCode from "../../models/Token Models/InviteCode.js";
 
 // Send invite email utility
-import sendInviteEmail from "../../utils/sendInviteEmail.js";
+import sendInviteEmail from "../../services/Mailer/sendInviteEmail.js";
 
 // Generate and hash token for invite code
 import { generateInviteToken } from "../../utils/generateToken.js";
