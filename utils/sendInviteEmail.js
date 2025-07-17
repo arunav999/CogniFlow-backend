@@ -18,10 +18,17 @@ const sendInviteEmail = async ({ email, inviteLink, workspaceName }) => {
     to: email,
     subject: `You're invited to join ${workspaceName} on Cogniflow`,
     html: `
-      <h3>You've been invited to join <strong>${workspaceName}</strong></h3>
+    <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 8px;">
+      <h2 style="color: #4f46e5;">👋 Invitation to ${workspaceName}</h2>
+      <p>Hello,</p>
+      <p>You’ve been invited to join the workspace <strong>${workspaceName}</strong> on <strong>Cogniflow</strong>.</p>
       <p>Click the button below to accept your invitation:</p>
-      <a href="${inviteLink}" style="padding:10px 20px;background:#4f46e5;color:#fff;border-radius:6px;text-decoration:none;">Accept Invite</a>
-      <p>This link will expire in 15 minutes.</p>
+      <a href="${inviteLink}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px;">Accept Invite</a>
+      <p style="margin-top: 20px;">This link will expire in 15 minutes.</p>
+      <hr style="margin-top: 30px;">
+      <p style="font-size: 12px; color: gray;">If you did not expect this invitation, you can ignore this email.</p>
+    </div>
+   <p>This link will expire in 15 minutes.</p>
     `,
   };
 

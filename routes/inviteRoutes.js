@@ -13,15 +13,19 @@ import rateLimitMiddleware from "../middlewares/rateLimiter";
 // TODO: Implement validation for invite code creation
 
 // ===================== Controllers ====================
-// Controller functions for invite code endpoints
-// TODO: Implement invite code controller functions
+import { generateInviteCodeController } from "../controllers/Invite/generateInviteCodeController";
 
 // Create a new router instance
 const router = Router();
 
 // ==================== Route Definitions ====================
 // Create a new invite code
-router.post("/generate", protect, rateLimitMiddleware);
+router.post(
+  "/generate",
+  protect,
+  rateLimitMiddleware,
+  generateInviteCodeController
+);
 
 // Accept an invite code
 router.post("/accept", protect, rateLimitMiddleware);
