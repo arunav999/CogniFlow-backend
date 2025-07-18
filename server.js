@@ -17,6 +17,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 // ==================== Error Handler ====================
 // Centralized error handling middleware
@@ -51,7 +52,7 @@ app.use(`${baseRoute}/upload`, uploadRoutes); // File upload routes
 app.use(`${baseRoute}/workspace`, workspaceRoutes); // Workspace routes
 app.use(`${baseRoute}/project`, projectRoutes); // Project routes
 app.use(`${baseRoute}/ticket`, ticketRoutes); // Ticket routes
-
+app.use(`${baseRoute}/dashboard`, dashboardRoutes); // Dashboard Routes
 
 // ==================== Error Middleware ====================
 // Handle errors from all routes and controllers
