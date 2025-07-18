@@ -90,7 +90,7 @@ export const registerUser = async (req, res, next) => {
     res.status(STATUS_CODES.CREATED).json({
       success: true,
       message: "User created successfully",
-      userDetails: {
+      user: {
         isVerified: newUser.isVerified,
         id: newUser._id,
         firstName: newUser.firstName,

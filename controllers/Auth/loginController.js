@@ -77,7 +77,7 @@ export const loginUser = async (req, res, next) => {
     res.status(STATUS_CODES.OK).json({
       success: true,
       message: "Login successfull",
-      userDetails: {
+      user: {
         isVerified: user.isVerified,
         id: user._id,
         firstName: user.firstName,
