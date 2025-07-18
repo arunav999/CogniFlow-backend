@@ -9,6 +9,7 @@ import ApiError from "../../errors/Apierror.js";
 
 // Constants for status codes
 import { STATUS_CODES } from "../../constants/statusCodes.js";
+import { ROLES } from "../../constants/roles.js";
 
 // Models for user, session, and refresh tokens
 import User from "../../models/User.js";
@@ -90,7 +91,12 @@ export const loginUser = async (req, res, next) => {
         workspaces: user.workspaces,
         company: user.company,
       },
-      redirect: user.role === "admin" ? "/admin/dashboard" : "/u/dashboard",
+      redirect:
+        user.role === ROLES.ADMIN
+          ? "/admin"
+          : user.role === ROLES.MANAGER
+          ? "/manager"
+          : "/developer",
     });
   } catch (error) {
     next(error);

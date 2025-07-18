@@ -104,7 +104,12 @@ export const registerUser = async (req, res, next) => {
         workspaces: newUser.workspaces,
         company: newUser.company,
       },
-      redirect: role === ROLES.ADMIN ? "/onboarding/workspace" : "/u/dashboard",
+      redirect:
+        role === ROLES.ADMIN
+          ? "/admin/workspaces"
+          : role === ROLES.MANAGER
+          ? "/manager"
+          : "/developer",
     });
   } catch (error) {
     // Centeralized error handler
