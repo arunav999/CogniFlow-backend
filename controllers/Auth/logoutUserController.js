@@ -62,7 +62,11 @@ export const logoutUser = async (req, res, next) => {
     // Respond with logout success
     res
       .status(STATUS_CODES.OK)
-      .json({ success: true, message: "Logged out successfully" });
+      .json({
+        success: true,
+        message: "Logged out successfully",
+        redirect: "/auth",
+      });
   } catch (error) {
     next(error);
   }

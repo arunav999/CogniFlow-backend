@@ -7,23 +7,15 @@ import { Router } from "express";
 import protect from "../middlewares/authMiddleware.js";
 
 // ==================== Controllers ====================
-// Controller functions for each dashboard endpoint
-import { adminDashboardController } from "../controllers/Dashboard/adminDashboardController.js";
-import { managerDashboardController } from "../controllers/Dashboard/managerDashboardController.js";
-import { developerDashboardController } from "../controllers/Dashboard/developerDashboardController.js";
+// Controller functions for dashboard endpoint
+import { dashboardController } from "../controllers/Dashboard/dashboardController.js";
 
 // Create a new router instance
 const router = Router();
 
 // ==================== Route Definitions ====================
-// Get Admin Dashboard details
-router.get("/admin", protect, adminDashboardController);
-
-// Get Manager Dashboard details
-router.get("/manager", protect, managerDashboardController);
-
-// Get Developer Dashboard details
-router.get("/developer", protect, developerDashboardController);
+// Get All Dashboard details based on user.role
+router.get("/", protect, dashboardController);
 
 // Export the router for use in the main server
 export default router;

@@ -3,6 +3,7 @@
 
 // Status code constants
 import { STATUS_CODES } from "../../constants/statusCodes.js";
+import { ROLES } from "../../constants/roles.js";
 
 // Main getUser controller
 export const getUser = async (req, res, next) => {
@@ -27,6 +28,12 @@ export const getUser = async (req, res, next) => {
         workspaces: user.workspaces,
         company: user.company,
       },
+      redirect:
+        user.role === ROLES.ADMIN
+          ? "/admin"
+          : user.role === ROLES.MANAGER
+          ? "/manager"
+          : "/developer",
     });
   } catch (error) {
     next(error);
