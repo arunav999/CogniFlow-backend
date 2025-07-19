@@ -19,6 +19,9 @@ import Session from "../../models/Token Models/Session.js";
 import { generateToken } from "../../utils/generateToken.js";
 import { bcryptHash, cryptoHash } from "../../utils/generateHash.js";
 
+// Util for cookie options
+import { cookieOptions } from "../../utils/utility.js";
+
 // Main registration controller
 export const registerUser = async (req, res, next) => {
   // Extract registration fields from request body
@@ -79,13 +82,8 @@ export const registerUser = async (req, res, next) => {
       token: hashedSignupToken,
     });
 
-    res.cookie("token", signUpToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      path: "/",
-      maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
-    });
+    // Set cookie
+    res.cookie("token", signUpToken, cookieOptions("24h"));
 
     res.status(STATUS_CODES.CREATED).json({
       success: true,

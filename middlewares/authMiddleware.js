@@ -19,6 +19,9 @@ import ApiError from "../errors/Apierror.js";
 // Status code constants
 import { STATUS_CODES } from "../constants/statusCodes.js";
 
+// Utility for cookie options
+import { cookieOptions } from "../utils/utility.js";
+
 // Middleware to protect routes
 const protect = async (req, res, next) => {
   try {
@@ -105,13 +108,7 @@ const protect = async (req, res, next) => {
         await Session.create({ user: user._id, token: hashedNewSessionToken });
 
         // Set new session token in cookies
-        res.cookie("loginToken", newSessionToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "Strict",
-          path: "/",
-          maxAge: 24 * 60 * 60 * 1000, // 1 day (24 hours)
-        });
+        res.cookie("loginToken", newSessionToken, cookieOptions("24h"));
 
         req.user = user;
 
