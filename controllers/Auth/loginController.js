@@ -23,6 +23,9 @@ import {
 } from "../../utils/generateToken.js";
 import { cryptoHash } from "../../utils/generateHash.js";
 
+// Utility for cookie options
+import { cookieOptions } from "../../utils/utility.js";
+
 // Main login controller
 export const loginUser = async (req, res, next) => {
   const { email, password, remember } = req.body;
@@ -49,13 +52,9 @@ export const loginUser = async (req, res, next) => {
         user: user._id,
         token: hashedRefreshToken,
       });
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
-        path: "/",
-        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
-      });
+
+      // Set cookie
+      res.cookie("refreshToken", refreshToken, cookieOptions("30d"));
     }
 
     // Create and store login session token
@@ -65,13 +64,9 @@ export const loginUser = async (req, res, next) => {
       user: user._id,
       token: hashedLoginToken,
     });
-    res.cookie("loginToken", loginToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      path: "/",
-      maxAge: 24 * 60 * 60 * 1000, // Expires in 24 hours
-    });
+
+    // Set cookie
+    res.cookie("loginToken", loginToken, cookieOptions("24hr"));
 
     // Respond with user details and redirect path
     res.status(STATUS_CODES.OK).json({
