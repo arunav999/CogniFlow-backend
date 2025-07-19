@@ -26,6 +26,21 @@ import errorHandler from "./errors/errorHandler.js";
 // ==================== Express App Setup ====================
 const app = express();
 
+// Trust proxy when in production (important for IPs, HTTPS, rate limiting, etc.)
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", true);
+}
+
+// Redirect HTTP to HTTPS — only in production
+if (process.env.NODE_ENV === "production") {
+  app.use((req, res, next) => {
+    if (req.secure || req.headers["x-forwarded-proto"] === "https") {
+      return next();
+    }
+    res.redirect("https://" + req.headers.host + req.url);
+  });
+}
+
 // ==================== CORS Middleware ====================
 // Allow cross-origin requests from client
 app.use(
