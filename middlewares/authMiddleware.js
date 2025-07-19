@@ -108,7 +108,7 @@ const protect = async (req, res, next) => {
         await Session.create({ user: user._id, token: hashedNewSessionToken });
 
         // Set new session token in cookies
-        res.cookie("loginToken", newSessionToken, cookieOptions("24h"));
+        res.cookie("loginToken", newSessionToken, cookieOptions("24hr"));
 
         req.user = user;
 

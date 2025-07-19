@@ -83,7 +83,7 @@ export const registerUser = async (req, res, next) => {
     });
 
     // Set cookie
-    res.cookie("token", signUpToken, cookieOptions("24h"));
+    res.cookie("token", signUpToken, cookieOptions("24hr"));
 
     res.status(STATUS_CODES.CREATED).json({
       success: true,
