@@ -61,6 +61,7 @@ export const createProjectController = async (req, res, next) => {
       projectIcon,
       workspaceRef: workspaceId,
       createdByUserId: userId,
+      assignedMembers: [userId], // this will change later
     });
 
     // Get new project's ID

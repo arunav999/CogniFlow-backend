@@ -18,7 +18,7 @@ import validateLoginUser from "../validations/Auth/loginUserValidator.js";
 import { registerUser } from "../controllers/Auth/registerController.js";
 import { loginUser } from "../controllers/Auth/loginController.js";
 import { checkUserExist } from "../controllers/Auth/checkUserEmailController.js";
-import { getUser } from "../controllers/Auth/getUserController.js";
+import { getUser, getUserById } from "../controllers/Auth/getUserController.js";
 import { logoutUser } from "../controllers/Auth/logoutUserController.js";
 
 // Create a new router instance
@@ -36,6 +36,9 @@ router.get("/check-email", checkUserExist);
 
 // Get the authenticated user's profile
 router.get("/getUser", protect, getUser);
+
+// Get user by id
+router.get("/getUser/:id", protect, getUserById);
 
 // Logout the authenticated user
 router.post("/logout", protect, logoutUser);
