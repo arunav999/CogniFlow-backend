@@ -1,9 +1,6 @@
 // ==================== Logout Controller ====================
 // Handles user logout, session and refresh token cleanup, and cookie removal
 
-// Crypto library for hashing
-import crypto from "crypto";
-
 // Models for session and refresh tokens
 import Session from "../../models/Token Models/Session.js";
 import RefreshToken from "../../models/Token Models/Refresh.js";
