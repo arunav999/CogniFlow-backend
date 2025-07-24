@@ -4,6 +4,9 @@
 // JWT for token verification
 import jwt from "jsonwebtoken";
 
+// Redis Client
+import { redisClient } from "../config/redisClient.js";
+
 // Crypto for hashing tokens
 import { generateToken } from "../utils/generateToken.js";
 import { cryptoHash } from "../utils/generateHash.js";
@@ -44,13 +47,24 @@ const protect = async (req, res, next) => {
         const decoded = jwt.verify(sessionToken, process.env.JWT_SECRET);
         const hashedToken = cryptoHash(sessionToken);
 
-        const session = await Session.findOne({ token: hashedToken });
-        if (!session)
+        // Old code - with mongo
+        // const session = await Session.findOne({ token: hashedToken });
+        // if (!session)
+        //   return next(
+        //     new ApiError(
+        //       STATUS_CODES.UNAUTHORIZED,
+        //       "Session not found. Please login again.",
+        //       ""
+        //     )
+        //   );
+
+        // New code - with Redis
+        const sessionUserId = await redisClient.get(`session:${hashedToken}`);
+        if (!sessionUserId)
           return next(
             new ApiError(
               STATUS_CODES.UNAUTHORIZED,
-              "Session not found. Please login again.",
-              ""
+              "Session not found or expired. Please login again"
             )
           );
 
@@ -83,15 +97,28 @@ const protect = async (req, res, next) => {
         );
         const hashedRefreshToken = cryptoHash(refreshToken);
 
-        const refresh = await RefreshToken.findOne({
-          token: hashedRefreshToken,
-        });
-        if (!refresh)
+        // Old code - refresh with mongo
+        // const refresh = await RefreshToken.findOne({
+        //   token: hashedRefreshToken,
+        // });
+        // if (!refresh)
+        //   return next(
+        //     new ApiError(
+        //       STATUS_CODES.UNAUTHORIZED,
+        //       "Invalid or expired refresh token found. Please login again.",
+        //       ""
+        //     )
+        //   );
+
+        // New code - refresh with redis
+        const refreshUserId = await redisClient.get(
+          `refresh:${hashedRefreshToken}`
+        );
+        if (!refreshUserId)
           return next(
             new ApiError(
               STATUS_CODES.UNAUTHORIZED,
-              "Invalid or expired refresh token found. Please login again.",
-              ""
+              "Invalid or expired refresh token. Please login again."
             )
           );
 
@@ -105,7 +132,15 @@ const protect = async (req, res, next) => {
         const newSessionToken = generateToken(user._id);
         const hashedNewSessionToken = cryptoHash(newSessionToken);
 
-        await Session.create({ user: user._id, token: hashedNewSessionToken });
+        // Old code - mongo
+        // await Session.create({ user: user._id, token: hashedNewSessionToken });
+
+        // New code - redis
+        await redisClient.setEx(
+          `session:${hashedNewSessionToken}`,
+          60 * 60 * 24, // 24 hours
+          user._id.toString()
+        );
 
         // Set new session token in cookies
         res.cookie("loginToken", newSessionToken, cookieOptions("24hr"));

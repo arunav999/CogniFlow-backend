@@ -4,6 +4,9 @@
 // Bcrypt for password comparison
 import bcrypt from "bcryptjs";
 
+// Redis client
+import { redisClient } from "../../config/redisClient.js";
+
 // Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
@@ -48,10 +51,19 @@ export const loginUser = async (req, res, next) => {
     if (remember) {
       const refreshToken = generateRefreshToken(user._id);
       const hashedRefreshToken = cryptoHash(refreshToken);
-      await RefreshToken.create({
-        user: user._id,
-        token: hashedRefreshToken,
-      });
+
+      // Old code - mongo
+      // await RefreshToken.create({
+      //   user: user._id,
+      //   token: hashedRefreshToken,
+      // });
+
+      // New code - redis
+      await redisClient.setEx(
+        `refresh:${hashedRefreshToken}`,
+        60 * 60 * 24 * 30, // 30 days
+        user._id.toString()
+      );
 
       // Set cookie
       res.cookie("refreshToken", refreshToken, cookieOptions("30d"));
@@ -60,10 +72,19 @@ export const loginUser = async (req, res, next) => {
     // Create and store login session token
     const loginToken = generateToken(user._id);
     const hashedLoginToken = cryptoHash(loginToken);
-    await Session.create({
-      user: user._id,
-      token: hashedLoginToken,
-    });
+
+    // Old code - mongo
+    // await Session.create({
+    //   user: user._id,
+    //   token: hashedLoginToken,
+    // });
+
+    // New code - redis
+    await redisClient.setEx(
+      `session:${hashedLoginToken}`,
+      60 * 60 * 24, // 24 hours
+      user._id.toString()
+    );
 
     // Set cookie
     res.cookie("loginToken", loginToken, cookieOptions("24hr"));

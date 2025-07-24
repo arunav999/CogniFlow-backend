@@ -1,6 +1,9 @@
 // ==================== Logout Controller ====================
 // Handles user logout, session and refresh token cleanup, and cookie removal
 
+// Redis client
+import { redisClient } from "../../config/redisClient.js";
+
 // Models for session and refresh tokens
 import Session from "../../models/Token Models/Session.js";
 import RefreshToken from "../../models/Token Models/Refresh.js";
@@ -41,21 +44,36 @@ export const logoutUser = async (req, res, next) => {
     // Remove session for signUpToken
     if (signUpToken) {
       const hashedSignupToken = cryptoHash(signUpToken);
-      await Session.deleteOne({ token: hashedSignupToken });
+
+      // Old
+      // await Session.deleteOne({ token: hashedSignupToken });
+
+      // New
+      await redisClient.del(`session:${hashedSignupToken}`);
       res.clearCookie("token", cookieOptions());
     }
 
     // Remove session for loginToken
     if (loginToken) {
       const hashedLoginToken = cryptoHash(loginToken);
-      await Session.deleteOne({ token: hashedLoginToken });
+
+      // Old
+      // await Session.deleteOne({ token: hashedLoginToken });
+
+      // New
+      await redisClient.del(`session:${hashedLoginToken}`);
       res.clearCookie("loginToken", cookieOptions());
     }
 
     // Remove refresh token
     if (refreshToken) {
       const hashedRefreshToken = cryptoHash(refreshToken);
-      await RefreshToken.deleteOne({ token: hashedRefreshToken });
+
+      // Old
+      // await RefreshToken.deleteOne({ token: hashedRefreshToken });
+
+      // New
+      await redisClient.del(`refresh:${hashedRefreshToken}`);
       res.clearCookie("refreshToken", cookieOptions());
     }
 

@@ -4,6 +4,9 @@
 // Error handling utility
 import ApiError from "../../errors/Apierror.js";
 
+// Redis client
+import { redisClient } from "../../config/redisClient.js";
+
 // Constants for status codes and roles
 import { STATUS_CODES } from "../../constants/statusCodes.js";
 import { ROLES } from "../../constants/roles.js";
@@ -70,17 +73,23 @@ export const registerUser = async (req, res, next) => {
       company,
     });
 
-    // Create JWT
+    // Create with JWT and Hash with CRYPTO
     const signUpToken = generateToken(newUser._id);
-
-    // Hash JWT
     const hashedSignupToken = cryptoHash(signUpToken);
 
+    // Old code - mongo
     // Store session in DB
-    await Session.create({
-      user: newUser._id,
-      token: hashedSignupToken,
-    });
+    // await Session.create({
+    //   user: newUser._id,
+    //   token: hashedSignupToken,
+    // });
+
+    // New code - Redis
+    await redisClient.setEx(
+      `session:${hashedSignupToken}`,
+      60 * 60 * 24, // 24 hours
+      newUser._id.toString()
+    );
 
     // Set cookie
     res.cookie("token", signUpToken, cookieOptions("24hr"));
