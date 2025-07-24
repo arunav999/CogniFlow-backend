@@ -9,6 +9,8 @@ import cookieParser from "cookie-parser";
 // ==================== Database Connection ====================
 // Connect to MongoDB using Mongoose
 import cogniflowDB from "./config/db.js";
+// Connect to RedisDB for Session management
+import { connectRedis } from "./config/redisClient.js";
 
 // ==================== Import Routes ====================
 // Modular route imports for different features
@@ -51,7 +53,8 @@ app.use(
 );
 
 // ==================== Connect to Database ====================
-cogniflowDB();
+cogniflowDB(); // Mongo
+connectRedis(); // Redis
 
 // ==================== Global Middlewares ====================
 // Parse JSON and cookies for all requests
