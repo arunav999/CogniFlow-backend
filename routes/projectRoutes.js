@@ -22,10 +22,19 @@ const router = Router();
 
 // ==================== Route Definitions ====================
 // Create a new project in a workspace
-router.post("/:wid", protect, createProjectValidator, createProjectController);
+router.post(
+  "/workspace/:wid",
+  protect,
+  createProjectValidator,
+  createProjectController
+);
 
 // Get all projects in a workspace
-router.get("/:wid", protect, ProjectGetControllers.getAllProjectsController);
+router.get(
+  "/workspace/:wid",
+  protect,
+  ProjectGetControllers.getAllProjectsController
+);
 
 // Update a project by its ID
 router.patch(
