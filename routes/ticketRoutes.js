@@ -17,10 +17,7 @@ import { upload } from "./uploadRoutes.js";
 // ==================== Controllers ====================
 // Controller functions for each ticket endpoint
 import { createTicketController } from "../controllers/Tickets/createTicketController.js";
-import {
-  getAllTicketsController,
-  getTicketByIdController,
-} from "../controllers/Tickets/getTicketController.js";
+import * as TicketGetControllers from "../controllers/Tickets/getTicketController.js";
 import { patchTicketByIdController } from "../controllers/Tickets/patchTicketController.js";
 import { deleteTicketByIdController } from "../controllers/Tickets/deleteTicketController.js";
 
@@ -34,16 +31,25 @@ const router = Router();
 
 // ==================== Route Definitions ====================
 // Create a new ticket in a project
-router.post("/", protect, createTicketValidator, createTicketController);
+router.post(
+  "/project/:pid",
+  protect,
+  createTicketValidator,
+  createTicketController
+);
 
 // Get all tickets in a project
-router.get("/", protect, getAllTicketsController);
-
-// Get a specific ticket by its ID
-router.get("/:id", protect, getTicketByIdController);
+router.get(
+  "/project/:pid",
+  protect,
+  TicketGetControllers.getAllTicketsController
+);
 
 // Update a ticket by its ID
 router.patch("/:id", protect, createTicketValidator, patchTicketByIdController);
+
+// Get a specific ticket by its ID
+router.get("/:id", protect, TicketGetControllers.getTicketByIdController);
 
 // Delete a ticket by its ID
 router.delete("/:id", protect, deleteTicketByIdController);

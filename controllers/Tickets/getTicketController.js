@@ -10,8 +10,8 @@ import Ticket from "../../models/Ticket.js";
 // Get all tickets that belong to a project
 export const getAllTicketsController = async (req, res, next) => {
   try {
-    // Extract project ID from request body
-    const { projectId } = req.body;
+    // Extract project ID from request params
+    const projectId = req.params.pid;
 
     // Find all tickets for the given project
     const getAllTickets = await Ticket.find({ relatedProject: projectId });
