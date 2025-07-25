@@ -39,23 +39,9 @@ export const patchProjectByIdController = async (req, res, next) => {
         )
       );
 
-    // Find workspace and project by ID
-    const findWorkspace = await Workspace.findById(workspaceId);
-    const findProject = await Project.findById(projectId);
-
-    // If workspace not found, respond with error
-    if (!findWorkspace)
-      return next(
-        new ApiError(STATUS_CODES.NOT_FOUND, "No workspace found", "")
-      );
-
-    // If project not found, respond with error
-    if (!findProject)
-      return next(new ApiError(STATUS_CODES.NOT_FOUND, "No project found", ""));
-
     // Update project details
-    const updatedProject = await Project.findByIdAndUpdate(
-      projectId,
+    const updatedProject = await Project.findOneAndUpdate(
+      { _id: projectId, workspaceRef: workspaceId },
       {
         $set: {
           projectStatus,
@@ -67,6 +53,11 @@ export const patchProjectByIdController = async (req, res, next) => {
       },
       { new: true }
     );
+
+    if (!updatedProject)
+      return next(
+        new ApiError(STATUS_CODES.NOT_FOUND, "Projects or workspace not found.")
+      );
 
     // Respond with updated project info
     res.status(STATUS_CODES.OK).json({

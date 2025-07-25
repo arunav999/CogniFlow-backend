@@ -13,10 +13,7 @@ import { createProjectValidator } from "../validations/Projects/createProjectVal
 // ==================== Controllers ====================
 // Controller functions for each project endpoint
 import { createProjectController } from "../controllers/Projects/createProjectController.js";
-import {
-  getAllProjectsController,
-  getProjectByIdController,
-} from "../controllers/Projects/getProjectController.js";
+import * as ProjectGetControllers from "../controllers/Projects/getProjectController.js";
 import { patchProjectByIdController } from "../controllers/Projects/patchProjectController.js";
 import { deleteProjectByIdController } from "../controllers/Projects/deleteProjectController.js";
 
@@ -25,13 +22,10 @@ const router = Router();
 
 // ==================== Route Definitions ====================
 // Create a new project in a workspace
-router.post("/", protect, createProjectValidator, createProjectController);
+router.post("/:wid", protect, createProjectValidator, createProjectController);
 
 // Get all projects in a workspace
-router.get("/", protect, getAllProjectsController);
-
-// Get a specific project by its ID
-router.get("/:id", protect, getProjectByIdController);
+router.get("/:wid", protect, ProjectGetControllers.getAllProjectsController);
 
 // Update a project by its ID
 router.patch(
@@ -40,6 +34,9 @@ router.patch(
   createProjectValidator,
   patchProjectByIdController
 );
+
+// Get a specific project by its ID
+router.get("/:id", protect, ProjectGetControllers.getProjectByIdController);
 
 // Delete a project by its ID
 router.delete("/:id", protect, deleteProjectByIdController);

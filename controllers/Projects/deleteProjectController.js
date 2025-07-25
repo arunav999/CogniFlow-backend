@@ -51,24 +51,34 @@ export const deleteProjectByIdController = async (req, res, next) => {
     // === Cascade delete: Remove all attachments from tickets ===
     const allTickets = await Ticket.find({ relatedProject: projectId });
 
-    for (const ticket of allTickets) {
-      for (const attachment of ticket.attachments) {
-        if (attachment.type === "file" && attachment.public_id) {
-          try {
+    // for (const ticket of allTickets) {
+    //   for (const attachment of ticket.attachments) {
+    //     if (attachment.type === "file" && attachment.public_id) {
+    //       try {
+    //         await cloudinary.uploader.destroy(attachment.public_id);
+    //       } catch (error) {
+    //         next(
+    //           new ApiError(
+    //             STATUS_CODES.SERVER_ERROR,
+    //             "Failed to delete attachment",
+    //             error.message
+    //           )
+    //         );
+    //         return;
+    //       }
+    //     }
+    //   }
+    // }
+
+    await Promise.all(
+      allTickets.flatMap((ticket) =>
+        ticket.attachments.map(async (attachment) => {
+          if (attachment.type === "file" && attachment.public_id) {
             await cloudinary.uploader.destroy(attachment.public_id);
-          } catch (error) {
-            next(
-              new ApiError(
-                STATUS_CODES.SERVER_ERROR,
-                "Failed to delete attachment",
-                error.message
-              )
-            );
-            return;
           }
-        }
-      }
-    }
+        })
+      )
+    );
 
     // === Cascade delete: Remove all related tickets ===
     await Ticket.deleteMany({ relatedProject: projectId });

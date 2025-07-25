@@ -18,8 +18,8 @@ import Project from "../../models/Project.js";
 export const createProjectController = async (req, res, next) => {
   // Extract user and project details from request
   const userId = req.user._id;
-  const { workspaceId, projectName, projectDescription, projectIcon } =
-    req.body;
+  const workspaceId = req.params.wid;
+  const { projectName, projectDescription, projectIcon } = req.body;
 
   try {
     // Check role of the user
@@ -85,7 +85,7 @@ export const createProjectController = async (req, res, next) => {
         icon: newProject.projectIcon,
         workspaceRef: newProject.workspaceRef,
         createdByUser: newProject.createdByUserId,
-        updateedByUser: newProject.updatedByUserId,
+        updatedByUser: newProject.updatedByUserId,
         assignedMembers: newProject.assignedMembers,
         tickets: newProject.tickets,
       },

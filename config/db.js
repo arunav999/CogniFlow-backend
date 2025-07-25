@@ -8,7 +8,7 @@ const connectDB = async () => {
   try {
     // Attempt to connect using environment variable
     await mongoose.connect(process.env.MONGO_URI, {});
-    console.log("Cogniflow DB connected");
+    console.log("Cogniflow Mongo DB connected");
   } catch (error) {
     // Log error and exit process if connection fails
     console.error("Error connecting to CogniflowDB", error);

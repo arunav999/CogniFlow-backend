@@ -10,8 +10,8 @@ import Project from "../../models/Project.js";
 // Get all projects in a workspace
 export const getAllProjectsController = async (req, res, next) => {
   try {
-    // Extract workspace ID from request body
-    const { workspaceId } = req.body;
+    // Extract workspace ID from request params
+    const workspaceId = req.params.wid;
 
     // Find all projects belonging to the workspace
     const getAllProjects = await Project.find({ workspaceRef: workspaceId });
