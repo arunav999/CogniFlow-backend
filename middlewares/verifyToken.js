@@ -4,6 +4,9 @@
 // JWT for token verification
 import jwt from "jsonwebtoken";
 
+// Redis client
+import { redisClient } from "../config/redisClient.js";
+
 // Crypto for hashing tokens
 import crypto from "crypto";
 
@@ -34,7 +37,12 @@ export const verifyToken = async (req, res, next) => {
       .digest("hex");
 
     // Check session validity in database
-    const session = await Session.findOne({ token: hashedToken });
+
+    // Old code - mongo
+    // const session = await Session.findOne({ token: hashedToken });
+
+    // New code - redis
+    const session = await redisClient.get(`session:${hashedToken}`);
 
     if (!session)
       return next(
