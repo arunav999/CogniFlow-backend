@@ -88,6 +88,8 @@ export const createProjectController = async (req, res, next) => {
         updatedByUser: newProject.updatedByUserId,
         assignedMembers: newProject.assignedMembers,
         tickets: newProject.tickets,
+        createdAt: newProject.createdAt,
+        updatedAt: newProject.updatedAt,
       },
     });
   } catch (error) {

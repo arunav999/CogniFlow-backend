@@ -120,6 +120,8 @@ export const createTicketController = async (req, res, next) => {
           url: item.url,
           type: item.type,
         })),
+        createdAt: newTicket.createdAt,
+        updatedAt: newTicket.updatedAt,
       },
     });
   } catch (error) {

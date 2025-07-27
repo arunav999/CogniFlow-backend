@@ -46,6 +46,8 @@ export const getAllTicketsController = async (req, res, next) => {
           title: task.title,
           completed: task.completed,
         })),
+        createdAt: ticket.createdAt,
+        updatedAt: ticket.updatedAt,
       })),
     });
   } catch (error) {
@@ -93,6 +95,8 @@ export const getTicketByIdController = async (req, res, next) => {
           title: task.title,
           completed: task.completed,
         })),
+        createdBy: findTicket.createdAt,
+        updatedAt: findTicket.updatedAt,
       },
     });
   } catch (error) {

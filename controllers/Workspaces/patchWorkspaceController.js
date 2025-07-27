@@ -62,6 +62,8 @@ export const patchWorkspaceById = async (req, res, next) => {
         updatedBy: updatedWorkspace.updatedByUserId,
         workspaceMembers: updatedWorkspace.workspaceMembers,
         projects: updatedWorkspace.projects,
+        createdAt: updatedWorkspace.createdAt,
+        updatedAt: updatedWorkspace.updatedAt,
       },
     });
   } catch (error) {

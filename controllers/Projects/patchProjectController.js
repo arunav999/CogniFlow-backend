@@ -74,6 +74,8 @@ export const patchProjectByIdController = async (req, res, next) => {
         updatedBy: updatedProject.updatedByUserId,
         assignedMembers: updatedProject.assignedMembers,
         tickets: updatedProject.tickets,
+        createdAt: updatedProject.createdAt,
+        updatedAt: updatedProject.updatedAt,
       },
     });
   } catch (error) {

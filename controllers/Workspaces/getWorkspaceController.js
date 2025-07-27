@@ -39,6 +39,8 @@ export const getAllWorkspaces = async (req, res, next) => {
         updatedBy: workspace.updatedByUserId,
         members: workspace.workspaceMembers,
         projects: workspace.projects,
+        createdAt: workspace.createdAt,
+        updatedAt: workspace.updatedAt,
       })),
     });
   } catch (error) {
@@ -71,6 +73,8 @@ export const getWorkspaceById = async (req, res, next) => {
         createdBy: findWorkspace.createdByUserId,
         updatedBy: findWorkspace.updatedByUserId,
         members: findWorkspace.workspaceMembers,
+        createdAt: findWorkspace.createdAt,
+        updatedAt: findWorkspace.updatedAt,
       },
     });
   } catch (error) {

@@ -111,6 +111,8 @@ export const patchTicketByIdController = async (req, res, next) => {
           url: item.url,
           type: item.type,
         })),
+        createdAt: updateTicket.createdAt,
+        updatedAt: updateTicket.updatedAt,
       },
     });
   } catch (error) {

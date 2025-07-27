@@ -61,6 +61,8 @@ export const createWorkspaceController = async (req, res, next) => {
         updatedBy: newWorkspace.updatedByUserId,
         assignedMembers: newWorkspace.workspaceMembers,
         projects: newWorkspace.projects,
+        createdAt: newWorkspace.createdAt,
+        updatedAt: newWorkspace.updatedAt,
       },
     });
   } catch (error) {

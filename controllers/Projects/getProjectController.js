@@ -37,6 +37,8 @@ export const getAllProjectsController = async (req, res, next) => {
         updatedBy: project.updatedByUserId,
         assignedMembers: project.assignedMembers,
         tickets: project.tickets,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
       })),
     });
   } catch (error) {
@@ -73,6 +75,8 @@ export const getProjectByIdController = async (req, res, next) => {
         updatedBy: findProject.updatedByUserId,
         assignedMembers: findProject.assignedMembers,
         tickets: findProject.tickets,
+        createdAt: findProject.createdAt,
+        updatedAt: findProject.updatedAt,
       },
     });
   } catch (error) {
